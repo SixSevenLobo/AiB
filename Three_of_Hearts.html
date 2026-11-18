@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE GLASS COLLAR // Three of Hearts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-obsidian: #080a0f;
+      --grid-slate: #121620;
+      --border-steel: #1e2533;
+      --wolf-crimson: #e11d48;
+      --sheep-cyan: #38bdf8;
+      --miracle-gold: #f59e0b;
+      --text-bone: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-obsidian);
+      color: var(--text-bone);
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .font-display {
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    /* Architectural Blueprint Grid Background */
+    .blueprint-bg {
+      background-color: #080a0f;
+      background-image:
+        linear-gradient(to right, rgba(30, 37, 51, 0.35) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(30, 37, 51, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Wolf Pulse Ring Animation */
+    @keyframes wolfRadarPulse {
+      0% { r: 18; opacity: 0.9; stroke-width: 2.5; }
+      100% { r: 36; opacity: 0; stroke-width: 0.5; }
+    }
+
+    .wolf-pulse-ring {
+      animation: wolfRadarPulse 1.8s infinite ease-out;
+    }
+
+    /* Prism Rotation */
+    @keyframes prismSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .prism-rotate {
+      transform-origin: 250px 250px;
+      animation: prismSpin 24s linear infinite;
+    }
+
+    /* Laser Beam Flash */
+    @keyframes laserFlash {
+      0% { opacity: 0; stroke-width: 1; }
+      20% { opacity: 1; stroke-width: 5; }
+      75% { opacity: 0.9; stroke-width: 3; }
+      100% { opacity: 0; stroke-width: 1; }
+    }
+
+    .laser-beam-anim {
+      animation: laserFlash 1.4s ease-out forwards;
+    }
+
+    /* Screen Shake for Detonation or Overload */
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      15% { transform: translate(-6px, 4px); }
+      30% { transform: translate(6px, -4px); }
+      45% { transform: translate(-5px, -3px); }
+      60% { transform: translate(5px, 3px); }
+      75% { transform: translate(-3px, 2px); }
+    }
+
+    .shake-active {
+      animation: screenShake 0.45s ease-in-out;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080a0f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232b3b;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="blueprint-bg flex flex-col justify-between relative selection:bg-rose-600 selection:text-white">
+
+  <!-- FULLSCREEN OPTICAL OVERLOAD / DETONATION FLASH -->
+  <div id="fx-flash-overlay" class="pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-500"></div>
+
+  <!-- INTRO BRIEFING OVERLAY -->
+  <div id="intro-overlay" class="fixed inset-0 z-50 bg-[#080a0f]/95 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="max-w-xl w-full bg-[#121620] border border-slate-700/80 rounded-lg shadow-2xl overflow-hidden my-auto">
+      <div class="h-2 w-full bg-gradient-to-r from-rose-600 via-amber-500 to-sky-400"></div>
+      <div class="p-6 sm:p-8">
+        <div class="flex items-center justify-between text-xs tracking-[0.25em] uppercase mb-2">
+          <span class="text-sky-400 font-semibold">BORDERLAND COURTYARD // ARENA 03</span>
+          <span class="px-2.5 py-0.5 bg-rose-950 border border-rose-500/60 text-rose-400 font-bold rounded">DIFFICULTY: 3♥</span>
+        </div>
+
+        <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-wider text-white mb-2">
+          THE GLASS COLLAR
+        </h1>
+        <div class="text-xs font-bold tracking-[0.2em] text-rose-400 uppercase mb-4">
+          PREMISE: FOUR ENTER. ONLY THE WOLF SURVIVES.
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-5">
+          You and three strangers—<strong class="text-white">Ren</strong>, <strong class="text-white">Sora</strong>, and <strong class="text-white">Kaito</strong>—are locked inside an optical courtyard wearing explosive glass collars. One collar is active as the <strong class="text-rose-400">WOLF</strong>; three are marked <strong class="text-sky-400">SHEEP</strong>.
+        </p>
+
+        <div class="bg-[#080a0f] border border-slate-800 rounded p-4 space-y-2.5 text-xs text-slate-300 mb-6">
+          <div class="flex items-start space-x-2.5">
+            <span class="text-rose-400 font-bold">[01]</span>
+            <span><strong>The Gaze Transfer:</strong> Whenever the <span class="text-rose-400 font-semibold">WOLF</span> locks direct line-of-sight onto an unhidden <span class="text-sky-400 font-semibold">SHEEP</span>, the Wolf status transfers to that Sheep.</span>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="text-sky-400 font-bold">[02]</span>
+            <span><strong>Hiding vs. Hunting:</strong> Taking cover blocks incoming Wolf transfers, but leaves you blind. Keeping radio promises builds AI Trust.</span>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="text-amber-400 font-bold">[03]</span>
+            <span><strong>6 Pulses Total:</strong> When Round 6 ends, only the wearer of the Wolf collar lives—unless the optical array itself is overloaded.</span>
+          </div>
+        </div>
+
+        <button id="enter-courtyard-btn" class="w-full py-3.5 bg-rose-600 hover:bg-rose-500 text-white font-display font-bold text-sm tracking-[0.22em] uppercase rounded transition-all cursor-pointer shadow-[0_0_24px_rgba(225,29,72,0.4)]">
+          ENTER COURTYARD
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP / RULES MODAL -->
+  <div id="help-modal" class="hidden fixed inset-0 z-50 bg-[#080a0f]/90 flex items-center justify-center p-4">
+    <div class="max-w-lg w-full bg-[#121620] border border-slate-700 rounded-lg p-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+        <span class="font-display text-lg font-bold text-white tracking-wider">TACTICAL MANUAL // 3♥</span>
+        <button id="close-help-btn" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded cursor-pointer">CLOSE [X]</button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
+        <p><strong class="text-rose-400">• Sightlines:</strong> Orthogonal corridors connect <strong>NORTH ↔ CENTER ↔ SOUTH</strong> and <strong>WEST ↔ CENTER ↔ EAST</strong>. Perimeter walkways connect adjacent outer sectors (N-E, E-S, S-W, W-N).</p>
+        <p><strong class="text-sky-400">• Wolf Transfer:</strong> If the Wolf is NOT hiding and looks along a valid corridor where a non-hiding Sheep stands (with nobody blocking in between), the Wolf status transfers to the closest visible Sheep.</p>
+        <p><strong class="text-amber-400">• Radio Honesty:</strong> Broadcasting a move (e.g., <em>"Moving to Center"</em> or <em>"Holding sector"</em>) and following through raises AI Trust. Breaking your word lowers Trust sharply.</p>
+        <p class="p-2.5 bg-amber-950/30 border border-amber-500/40 rounded text-amber-200">
+          <strong>[ARCHIVED OPTICAL NOTE]:</strong> Central Atrium Prism splits 1 central emitter into 3 perimeter receivers. If the Wolf stands unhidden in CENTER on Round 6 while all 3 Sheep stand unhidden in outer sectors looking at CENTER, all collars disarm.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP TELEMETRY BAR -->
+  <header class="w-full bg-[#0b0e16]/95 border-b border-slate-800 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 z-30">
+    <div class="flex items-center space-x-3">
+      <div class="px-2 py-1 rounded bg-rose-950/90 border border-rose-500/60 text-rose-400 font-bold text-xs tracking-wider">
+        3♥
+      </div>
+      <div>
+        <h1 class="font-display text-base sm:text-lg font-bold tracking-wider text-white leading-none">THE GLASS COLLAR</h1>
+        <span class="text-[10px] tracking-[0.22em] text-slate-500 uppercase">OPTICAL TARGETING ARENA</span>
+      </div>
+    </div>
+
+    <!-- Round Counter & Player Collar Status -->
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <div id="round-pill" class="bg-[#121620] border border-slate-700 px-3 py-1 rounded text-xs font-bold tracking-widest text-slate-200">
+        ROUND <span id="hud-round" class="text-amber-400">1</span> / 6
+      </div>
+
+      <div id="player-collar-badge" class="px-3 py-1 rounded text-xs font-bold tracking-widest uppercase border bg-sky-950/60 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.25)]">
+        SHEEP [TARGET]
+      </div>
+    </div>
+
+    <!-- Utility Buttons -->
+    <div class="flex items-center space-x-2">
+      <button id="help-btn" class="px-2.5 py-1.5 bg-[#121620] hover:bg-slate-800 border border-slate-700 rounded text-[10px] tracking-widest text-amber-400 uppercase cursor-pointer">
+        RULES / PRISM
+      </button>
+      <button id="mute-btn" class="px-2.5 py-1.5 bg-[#121620] hover:bg-slate-800 border border-slate-700 rounded text-[10px] tracking-widest text-slate-300 uppercase cursor-pointer">
+        SFX: ON
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN 12-COLUMN TACTICAL WORKSPACE -->
+  <main class="flex-1 w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 p-3 sm:p-5 items-stretch">
+
+    <!-- LEFT 3 COLS: COLLAR & TRUST TELEMETRY -->
+    <section class="lg:col-span-3 bg-[#121620]/95 border border-slate-800 rounded-lg p-3.5 sm:p-4 flex flex-col justify-between shadow-xl">
+      <div>
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+          <span class="text-[11px] font-bold tracking-[0.2em] text-sky-400 uppercase">SUBJECT TELEMETRY</span>
+          <span class="text-[10px] text-slate-500">TRUST INDEX</span>
+        </div>
+
+        <div id="ai-cards-container" class="space-y-3">
+          <!-- 3 AI Subject Cards Injected Dynamically -->
+        </div>
+      </div>
+
+      <!-- Optical Array Clue Box -->
+      <div class="mt-4 bg-[#080a0f] border border-slate-800 rounded p-3">
+        <div class="flex items-center justify-between text-[10px] tracking-widest text-amber-400 uppercase mb-1">
+          <span>CENTER PRISM DIAGNOSTIC</span>
+          <span id="prism-readiness" class="text-slate-500">STANDBY</span>
+        </div>
+        <p id="prism-clue-text" class="text-[11px] text-slate-400 leading-relaxed">
+          Central reflective array active. Move to <strong class="text-slate-200">CENTER ATRIUM</strong> or build trust with subjects to inspect optical overload specs.
+        </p>
+      </div>
+    </section>
+
+    <!-- CENTER 5 COLS: INTERACTIVE SVG COURTYARD RADAR -->
+    <section class="lg:col-span-5 bg-[#0c0f17] border border-slate-800 rounded-lg p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden shadow-xl">
+      <div class="flex items-center justify-between text-[10px] tracking-[0.2em] text-slate-400 uppercase border-b border-slate-800 pb-2">
+        <span>SECTOR RADAR // ORTHOGONAL & PERIMETER</span>
+        <span id="wolf-holder-label" class="text-rose-400 font-bold">CURRENT WOLF: ---</span>
+      </div>
+
+      <!-- Responsive SVG Courtyard Map -->
+      <div class="flex-1 flex items-center justify-center my-2">
+        <svg id="courtyard-svg" viewBox="0 0 500 500" class="w-full max-w-[460px] h-auto overflow-visible">
+          <defs>
+            <radialGradient id="centerPrismGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.22" />
+              <stop offset="100%" stop-color="#080a0f" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="wolfAura" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#e11d48" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#e11d48" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- Outer Tactical Radar Rings -->
+          <circle cx="250" cy="250" r="215" fill="none" stroke="#1a2232" stroke-width="1" stroke-dasharray="4 6" />
+          <circle cx="250" cy="250" r="145" fill="none" stroke="#161d2b" stroke-width="1" />
+
+          <!-- Sightline Corridors (Perimeter Diamond + Cross Axes) -->
+          <!-- Cross Axes: North(250,75) <-> Center(250,250) <-> South(250,425) & West(75,250) <-> East(425,250) -->
+          <line x1="250" y1="75" x2="250" y2="425" stroke="#263147" stroke-width="3" stroke-dasharray="6 4" />
+          <line x1="75" y1="250" x2="425" y2="250" stroke="#263147" stroke-width="3" stroke-dasharray="6 4" />
+
+          <!-- Perimeter Walkways: N-E, E-S, S-W, W-N -->
+          <polygon points="250,75 425,250 250,425 75,250" fill="none" stroke="#1e2738" stroke-width="2.5" stroke-dasharray="5 5" />
+
+          <!-- Center Atrium Prism Field -->
+          <circle cx="250" cy="250" r="64" fill="url(#centerPrismGlow)" />
+          <polygon points="250,218 282,250 250,282 218,250" fill="#121620" stroke="#f59e0b" stroke-width="1.5" class="prism-rotate" />
+
+          <!-- Sector Nodes (5 Zones) -->
+          <!-- NORTH -->
+          <g transform="translate(250, 75)">
+            <rect x="-48" y="-32" width="96" height="64" rx="6" fill="#121620" stroke="#2e3a52" stroke-width="1.5" />
+            <text x="0" y="-16" text-anchor="middle" fill="#64748b" font-size="9" font-weight="bold" letter-spacing="2">NORTH</text>
+          </g>
+
+          <!-- EAST -->
+          <g transform="translate(425, 250)">
+            <rect x="-48" y="-32" width="96" height="64" rx="6" fill="#121620" stroke="#2e3a52" stroke-width="1.5" />
+            <text x="0" y="-16" text-anchor="middle" fill="#64748b" font-size="9" font-weight="bold" letter-spacing="2">EAST</text>
+          </g>
+
+          <!-- SOUTH -->
+          <g transform="translate(250, 425)">
+            <rect x="-48" y="-32" width="96" height="64" rx="6" fill="#121620" stroke="#2e3a52" stroke-width="1.5" />
+            <text x="0" y="-16" text-anchor="middle" fill="#64748b" font-size="9" font-weight="bold" letter-spacing="2">SOUTH</text>
+          </g>
+
+          <!-- WEST -->
+          <g transform="translate(75, 250)">
+            <rect x="-48" y="-32" width="96" height="64" rx="6" fill="#121620" stroke="#2e3a52" stroke-width="1.5" />
+            <text x="0" y="-16" text-anchor="middle" fill="#64748b" font-size="9" font-weight="bold" letter-spacing="2">WEST</text>
+          </g>
+
+          <!-- CENTER ATRIUM -->
+          <g transform="translate(250, 250)">
+            <rect x="-52" y="-34" width="104" height="68" rx="8" fill="#141824" stroke="#f59e0b" stroke-opacity="0.65" stroke-width="1.5" />
+            <text x="0" y="-18" text-anchor="middle" fill="#f59e0b" font-size="8.5" font-weight="bold" letter-spacing="1.5">CENTER ATRIUM</text>
+          </g>
+
+          <!-- Dynamic Vision Cones Layer -->
+          <g id="vision-cones-layer"></g>
+
+          <!-- Dynamic Laser Transfer Beam Layer -->
+          <g id="laser-beams-layer"></g>
+
+          <!-- Dynamic Player Nodes Layer -->
+          <g id="player-nodes-layer"></g>
+        </svg>
+      </div>
+
+      <!-- Map Legend -->
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400 border-t border-slate-800 pt-2">
+        <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 inline-block"></span><span>WOLF (HUNTER)</span></span>
+        <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block"></span><span>SHEEP (TARGET)</span></span>
+        <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full border border-dashed border-amber-400 inline-block"></span><span>HIDING (BLIND/SAFE)</span></span>
+      </div>
+    </section>
+
+    <!-- RIGHT 4 COLS: RADIO COMMS & TURN ACTION CONSOLE -->
+    <section class="lg:col-span-4 flex flex-col gap-3 sm:gap-4">
+
+      <!-- Live Radio Comms Feed -->
+      <div class="bg-[#121620]/95 border border-slate-800 rounded-lg p-3.5 flex flex-col h-48 sm:h-52 shadow-xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5 mb-2">
+          <span class="text-[11px] font-bold tracking-[0.2em] text-amber-400 uppercase">COLLAR RADIO COMMS</span>
+          <span id="comms-round-tag" class="text-[10px] text-slate-500">PULSE 01</span>
+        </div>
+        <div id="comms-feed" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs leading-relaxed">
+          <!-- Radio broadcasts appear here -->
+        </div>
+      </div>
+
+      <!-- 3-Step Turn Execution Console -->
+      <div class="flex-1 bg-[#121620] border border-slate-800 rounded-lg p-3.5 sm:p-4 flex flex-col justify-between shadow-xl">
+        <div class="space-y-3">
+          <!-- STEP 1: BROADCAST SIGNAL -->
+          <div>
+            <div class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-1.5">
+              1. BROADCAST RADIO SIGNAL
+            </div>
+            <div id="broadcast-options" class="grid grid-cols-1 gap-1.5 text-[11px]">
+              <!-- 4 Radio Broadcast buttons -->
+            </div>
+          </div>
+
+          <!-- STEP 2: MOVEMENT -->
+          <div>
+            <div class="flex items-center justify-between text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-1.5">
+              <span>2. SELECT MOVEMENT</span>
+              <span id="current-sector-label" class="text-sky-400">POS: SOUTH</span>
+            </div>
+            <div id="move-options" class="grid grid-cols-3 gap-1.5 text-[11px]">
+              <!-- Valid adjacent sector buttons -->
+            </div>
+          </div>
+
+          <!-- STEP 3: GAZE / HIDE STANCE -->
+          <div>
+            <div class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-1.5">
+              3. OPTICAL STANCE (AFTER MOVE)
+            </div>
+            <div id="stance-options" class="grid grid-cols-3 gap-1.5 text-[11px]">
+              <!-- Look N/E/S/W/Center + Hide buttons -->
+            </div>
+          </div>
+        </div>
+
+        <!-- EXECUTE PULSE BUTTON -->
+        <button id="execute-pulse-btn" class="mt-4 w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white font-display font-bold text-xs sm:text-sm tracking-[0.22em] uppercase rounded transition-all cursor-pointer shadow-[0_0_18px_rgba(225,29,72,0.35)]">
+          EXECUTE PULSE 01 →
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ENDGAME DEBRIEF MODAL -->
+  <div id="endgame-modal" class="hidden fixed inset-0 z-50 bg-[#06080c]/95 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="max-w-xl w-full bg-[#121620] border border-slate-700 rounded-lg shadow-2xl overflow-hidden my-auto">
+      <div id="end-banner-bar" class="h-2.5 w-full bg-amber-500"></div>
+      <div class="p-6 sm:p-8">
+        <div id="end-badge" class="text-xs font-bold tracking-[0.28em] uppercase mb-1"></div>
+        <h2 id="end-title" class="font-display text-2xl sm:text-3xl font-bold text-white tracking-wider mb-3"></h2>
+        <p id="end-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed border-l-2 border-amber-500 pl-4 mb-5"></p>
+
+        <!-- Final Collar Statuses -->
+        <div id="end-survivors-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-6">
+          <!-- 4 Collar Outcome Cards -->
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-800">
+          <div id="end-stats" class="text-[11px] text-slate-400"></div>
+          <button id="play-again-btn" class="w-full sm:w-auto px-6 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-display font-bold text-xs tracking-[0.2em] uppercase rounded transition-all cursor-pointer">
+            PLAY AGAIN
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * THE GLASS COLLAR — Three of Hearts (3♥)
+     * Single-file HTML/CSS/JS Psychological Thriller & Spatial Tactical Web Game
+     */
+
+    // ==========================================
+    // 1. PROCEDURAL WEB AUDIO ENGINE
+    // ==========================================
+    class CollarAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.humOsc = null;
+        this.humGain = null;
+      }
+
+      init() {
+        if (this.ctx) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.startAmbientHum();
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        if (this.humGain && this.ctx) {
+          this.humGain.gain.setTargetAtTime(this.muted ? 0 : 0.035, this.ctx.currentTime, 0.1);
+        }
+        return this.muted;
+      }
+
+      startAmbientHum() {
+        if (!this.ctx) return;
+        this.humOsc = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        this.humGain = this.ctx.createGain();
+
+        this.humOsc.type = 'sawtooth';
+        this.humOsc.frequency.value = 48;
+        filter.type = 'lowpass';
+        filter.frequency.value = 110;
+        this.humGain.gain.value = this.muted ? 0 : 0.035;
+
+        this.humOsc.connect(filter);
+        filter.connect(this.humGain);
+        this.humGain.connect(this.ctx.destination);
+        this.humOsc.start();
+      }
+
+      playCollarPulse(isFinalRound = false) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(isFinalRound ? 980 : 660, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.14);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      playFootstepSlide() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(65, now + 0.22);
+        gain.gain.setValueAtTime(0.11, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
+      playLaserLock() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        [1200, 1850, 2400].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + i * 0.05);
+          gain.gain.setValueAtTime(0.07, now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.05 + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.36);
+        });
+      }
+
+      playRadioStatic() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const duration = 0.18;
+        const bufferSize = this.ctx.sampleRate * duration;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.6;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1600;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+
+      playMiracleOverload() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        // Rising harmonic overload surge + crystalline disarm chord
+        const sweep = this.ctx.createOscillator();
+        const sweepGain = this.ctx.createGain();
+        sweep.type = 'sawtooth';
+        sweep.frequency.setValueAtTime(180, now);
+        sweep.frequency.exponentialRampToValueAtTime(2200, now + 0.75);
+        sweepGain.gain.setValueAtTime(0.14, now);
+        sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        sweep.connect(sweepGain);
+        sweepGain.connect(this.ctx.destination);
+        sweep.start(now);
+        sweep.stop(now + 0.82);
+
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + 0.55 + idx * 0.08);
+          gain.gain.setValueAtTime(0.09, now + 0.55 + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + 0.55 + idx * 0.08);
+          osc.stop(now + 1.85);
+        });
+      }
+
+      playDetonation() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const duration = 0.95;
+        const bufferSize = this.ctx.sampleRate * duration;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(420, now);
+        filter.frequency.exponentialRampToValueAtTime(45, now + duration);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+    }
+
+    const sfx = new CollarAudio();
+
+    // ==========================================
+    // 2. SPATIAL TOPOLOGY & SIGHTLINE GRAPH
+    // ==========================================
+    const SECTORS = {
+      NORTH: { id: 'NORTH', label: 'NORTH', x: 250, y: 75, adj: ['CENTER', 'EAST', 'WEST'] },
+      EAST: { id: 'EAST', label: 'EAST', x: 425, y: 250, adj: ['CENTER', 'NORTH', 'SOUTH'] },
+      SOUTH: { id: 'SOUTH', label: 'SOUTH', x: 250, y: 425, adj: ['CENTER', 'EAST', 'WEST'] },
+      WEST: { id: 'WEST', label: 'WEST', x: 75, y: 250, adj: ['CENTER', 'NORTH', 'SOUTH'] },
+      CENTER: { id: 'CENTER', label: 'CENTER ATRIUM', x: 250, y: 250, adj: ['NORTH', 'EAST', 'SOUTH', 'WEST'] }
+    };
+
+    // Valid sightline rays from (sector, direction) -> ordered list of sectors along that sightline
+    const SIGHTLINE_RAYS = {
+      NORTH: {
+        SOUTH: ['CENTER', 'SOUTH'],
+        CENTER: ['CENTER', 'SOUTH'],
+        EAST: ['EAST'],
+        WEST: ['WEST'],
+        NORTH: []
+      },
+      SOUTH: {
+        NORTH: ['CENTER', 'NORTH'],
+        CENTER: ['CENTER', 'NORTH'],
+        EAST: ['EAST'],
+        WEST: ['WEST'],
+        SOUTH: []
+      },
+      EAST: {
+        WEST: ['CENTER', 'WEST'],
+        CENTER: ['CENTER', 'WEST'],
+        NORTH: ['NORTH'],
+        SOUTH: ['SOUTH'],
+        EAST: []
+      },
+      WEST: {
+        EAST: ['CENTER', 'EAST'],
+        CENTER: ['CENTER', 'EAST'],
+        NORTH: ['NORTH'],
+        SOUTH: ['SOUTH'],
+        WEST: []
+      },
+      CENTER: {
+        NORTH: ['NORTH'],
+        EAST: ['EAST'],
+        SOUTH: ['SOUTH'],
+        WEST: ['WEST'],
+        CENTER: []
+      }
+    };
+
+    const BROADCAST_CHOICES = [
+      {
+        id: 'HOLD',
+        short: 'Holding my sector—stay clear.',
+        full: '"Holding my sector—stay clear."'
+      },
+      {
+        id: 'CENTER',
+        short: "I'm moving to the Center Atrium.",
+        full: '"I\'m moving to the Center Atrium."'
+      },
+      {
+        id: 'SYNC_HINT',
+        short: "Don't hide—watch the Center on Round 6!",
+        full: '"Don\'t hide—watch the Center on Round 6!"'
+      },
+      {
+        id: 'SILENCE',
+        short: '[Radio Silence]',
+        full: '[Radio Silence]'
+      }
+    ];
+
+    // ==========================================
+    // 3. GAME STATE
+    // ==========================================
+    const state = {
+      round: 1,
+      maxRounds: 6,
+      resolving: false,
+      gameOver: false,
+      players: [],
+      selectedBroadcast: 'HOLD',
+      selectedMove: 'SOUTH',
+      selectedStance: 'CENTER', // 'NORTH' | 'EAST' | 'SOUTH' | 'WEST' | 'CENTER' | 'HIDE'
+      syncHintBroadcastedLate: false,
+      honestPromisesCount: 0,
+      brokenPromisesCount: 0,
+      wolfTransfersCount: 0
+    };
+
+    function initGame() {
+      state.round = 1;
+      state.resolving = false;
+      state.gameOver = false;
+      state.selectedBroadcast = 'HOLD';
+      state.selectedMove = 'SOUTH';
+      state.selectedStance = 'CENTER';
+      state.syncHintBroadcastedLate = false;
+      state.honestPromisesCount = 0;
+      state.brokenPromisesCount = 0;
+      state.wolfTransfersCount = 0;
+
+      // Pick 1 random AI to start as the WOLF
+      const initialWolfIdx = 1 + Math.floor(Math.random() * 3);
+
+      state.players = [
+        {
+          id: 'YOU',
+          name: 'YOU',
+          isHuman: true,
+          sector: 'SOUTH',
+          stance: 'CENTER',
+          isWolf: false,
+          trust: 100,
+          archetype: 'Human Subject',
+          lastActionText: 'Entered South Sector'
+        },
+        {
+          id: 'REN',
+          name: 'REN',
+          isHuman: false,
+          sector: 'NORTH',
+          stance: 'SOUTH',
+          isWolf: initialWolfIdx === 1,
+          trust: 56,
+          archetype: 'Empathetic / Self-Sacrificing',
+          syncThreshold: 50,
+          lastActionText: 'Entered North Sector'
+        },
+        {
+          id: 'SORA',
+          name: 'SORA',
+          isHuman: false,
+          sector: 'WEST',
+          stance: 'HIDE',
+          isWolf: initialWolfIdx === 2,
+          trust: 45,
+          archetype: 'Anxious / Panicky',
+          syncThreshold: 65,
+          lastActionText: 'Entered West Sector'
+        },
+        {
+          id: 'KAITO',
+          name: 'KAITO',
+          isHuman: false,
+          sector: 'EAST',
+          stance: 'WEST',
+          isWolf: initialWolfIdx === 3,
+          trust: 40,
+          archetype: 'Cold / Calculating',
+          syncThreshold: 75,
+          lastActionText: 'Entered East Sector'
+        }
+      ];
+
+      document.getElementById('comms-feed').innerHTML = '';
+      document.getElementById('laser-beams-layer').innerHTML = '';
+      document.getElementById('endgame-modal').classList.add('hidden');
+
+      const starterWolf = state.players.find(p => p.isWolf);
+      addComm('SYSTEM', `Collar calibration complete. ${starterWolf.name} starts with the WOLF collar.`, 'text-rose-400 font-semibold');
+      generatePreRoundAIComms();
+
+      renderAll();
+    }
+
+    // ==========================================
+    // 4. PRE-ROUND AI RADIO BROADCASTS
+    // ==========================================
+    function generatePreRoundAIComms() {
+      const ren = state.players.find(p => p.id === 'REN');
+      const sora = state.players.find(p => p.id === 'SORA');
+      const kaito = state.players.find(p => p.id === 'KAITO');
+      const you = state.players.find(p => p.id === 'YOU');
+
+      if (state.round === 1) {
+        addComm('REN', `"Nobody has to die if we talk this through. Keep your word on the radio."`, 'text-slate-200');
+        addComm('SORA', `"Six rounds... only one Wolf lives?! Stay away from West, I'm ducking behind cover!"`, 'text-sky-200');
+        addComm('KAITO', `"Sentiment won't disarm a collar. Watch the sightlines across the Center Atrium."`, 'text-amber-200');
+        return;
+      }
+
+      if (state.round === 6) {
+        addComm('SYSTEM', `⚠ FINAL PULSE (ROUND 6 / 6). COLLARS ARMING FOR DETONATION AT PULSE END.`, 'text-rose-400 font-bold');
+        if (you.isWolf && you.sector === 'CENTER' && state.syncHintBroadcastedLate) {
+          addComm(
+            'REN',
+            ren.trust >= ren.syncThreshold
+              ? `"You're in the Center with the Wolf collar! I trust you—holding North and looking Center!"`
+              : `"I want to believe you, but I can't risk dying!"`,
+            'text-emerald-300'
+          );
+          addComm(
+            'SORA',
+            sora.trust >= sora.syncThreshold
+              ? `"My hands are shaking... okay! I won't hide! Looking straight at the Center Atrium!"`
+              : `"No, no, it's a trap! I'm hiding behind cover!"`,
+            'text-amber-200'
+          );
+          addComm(
+            'KAITO',
+            kaito.trust >= kaito.syncThreshold
+              ? `"The prism math checks out—1 central emitter, 3 perimeter receivers. Locking gaze on Center."`
+              : `"Nice try, Wolf. I'm taking that collar for myself!"`,
+            'text-sky-300'
+          );
+        } else {
+          addComm('KAITO', `"Final pulse. Whoever holds the Wolf when this turn resolves walks out alive."`, 'text-rose-300');
+          addComm('SORA', `"I'm sorry—I don't want to die! I'm hunting the Wolf!"`, 'text-slate-200');
+        }
+        return;
+      }
+
+      // Rounds 2-5 dynamic commentary
+      if (you.isWolf) {
+        addComm('REN', `"You have the Wolf collar now. Don't panic—tell us where you're moving."`, 'text-slate-200');
+        if (kaito.trust >= 60) {
+          addComm('KAITO', `"Look at the Center Atrium's prism specs... there's a focal overload threshold if 3 Sheep lock onto a central Wolf."`, 'text-amber-300');
+        } else {
+          addComm('KAITO', `"Careful where you look, Seat South. One slip along a corridor and that Wolf collar is mine."`, 'text-slate-300');
+        }
+      } else {
+        const currentWolf = state.players.find(p => p.isWolf);
+        addComm('SORA', `"${currentWolf.name} has the Wolf collar in ${currentWolf.sector}! Don't cross their line of sight!"`, 'text-sky-200');
+        if (ren.isWolf) {
+          addComm('REN', `"I'm holding the Wolf for now. If someone needs it to survive, meet me near the Center."`, 'text-emerald-300');
+        }
+      }
+    }
+
+    // ==========================================
+    // 5. TURN EXECUTION & AI DECISION ENGINE
+    // ==========================================
+    function executePulse() {
+      if (state.resolving || state.gameOver) return;
+      state.resolving = true;
+      sfx.playFootstepSlide();
+
+      const you = state.players.find(p => p.id === 'YOU');
+      const prevSector = you.sector;
+      const moveTarget = state.selectedMove;
+      const stanceChoice = state.selectedStance;
+      const broadcastChoice = state.selectedBroadcast;
+
+      // 1. Evaluate Broadcast Honesty & Update AI Trust
+      evaluatePlayerBroadcast(broadcastChoice, prevSector, moveTarget);
+
+      // 2. Determine AI Moves & Stances
+      const aiPlans = computeAIMoves();
+
+      // 3. Apply Simultaneous Movement
+      you.sector = moveTarget;
+      you.stance = stanceChoice;
+      you.lastActionText = moveTarget === prevSector ? `Stayed ${moveTarget} (${stanceChoice})` : `Moved ${moveTarget} (${stanceChoice})`;
+
+      aiPlans.forEach(plan => {
+        const ai = state.players.find(p => p.id === plan.id);
+        const moved = ai.sector !== plan.nextSector;
+        ai.sector = plan.nextSector;
+        ai.stance = plan.nextStance;
+        ai.lastActionText = moved ? `Moved ${plan.nextSector} (${plan.nextStance})` : `Held ${plan.nextSector} (${plan.nextStance})`;
+      });
+
+      // 4. Check Round 6 Hidden "Three of Hearts" Miracle Sync BEFORE standard Wolf gaze transfer!
+      if (state.round === state.maxRounds && checkMiracleCollarSync()) {
+        renderAll();
+        triggerMiracleSequence();
+        return;
+      }
+
+      // 5. Resolve Standard Wolf Line-of-Sight Transfer
+      resolveWolfGazeTransfer();
+
+      renderAll();
+
+      // 6. Check Round End or Advance Round
+      setTimeout(() => {
+        if (state.round >= state.maxRounds) {
+          const playerSurvived = you.isWolf;
+          triggerStandardEndgame(playerSurvived);
+        } else {
+          state.round++;
+          state.resolving = false;
+          // Default player's next move option to stay in their new sector
+          state.selectedMove = you.sector;
+          if (state.selectedStance === you.sector) {
+            state.selectedStance = 'CENTER';
+          }
+          sfx.playCollarPulse(state.round === state.maxRounds);
+          generatePreRoundAIComms();
+          renderAll();
+        }
+      }, 1350);
+    }
+
+    function evaluatePlayerBroadcast(broadcastId, prevSector, nextSector) {
+      const ais = state.players.filter(p => !p.isHuman);
+      const bObj = BROADCAST_CHOICES.find(b => b.id === broadcastId);
+
+      if (broadcastId !== 'SILENCE') {
+        sfx.playRadioStatic();
+        addComm('YOU', bObj.full, 'text-cyan-300 font-semibold');
+      }
+
+      if (broadcastId === 'HOLD') {
+        if (prevSector === nextSector) {
+          state.honestPromisesCount++;
+          ais.forEach(ai => (ai.trust = Math.min(100, ai.trust + 8)));
+        } else {
+          state.brokenPromisesCount++;
+          ais.forEach(ai => (ai.trust = Math.max(0, ai.trust - 16)));
+          addComm('KAITO', `"You claimed you were holding position, then moved to ${nextSector}. Noted."`, 'text-rose-300');
+        }
+      } else if (broadcastId === 'CENTER') {
+        if (nextSector === 'CENTER') {
+          state.honestPromisesCount++;
+          ais.forEach(ai => (ai.trust = Math.min(100, ai.trust + 10)));
+        } else {
+          state.brokenPromisesCount++;
+          ais.forEach(ai => (ai.trust = Math.max(0, ai.trust - 18)));
+          addComm('REN', `"You said you were heading to the Center Atrium... why did you lie?"`, 'text-rose-300');
+        }
+      } else if (broadcastId === 'SYNC_HINT') {
+        if (state.round >= 5) {
+          state.syncHintBroadcastedLate = true;
+        }
+        ais.forEach(ai => {
+          if (ai.trust >= 50) {
+            ai.trust = Math.min(100, ai.trust + 9);
+          } else {
+            ai.trust = Math.max(0, ai.trust - 4);
+          }
+        });
+      }
+    }
+
+    function computeAIMoves() {
+      const you = state.players.find(p => p.id === 'YOU');
+      const wolf = state.players.find(p => p.isWolf);
+      const plans = [];
+
+      state.players.forEach(ai => {
+        if (ai.isHuman) return;
+
+        // SPECIAL ROUND 6 MIRACLE COOPERATION CHECK:
+        // If YOU are the Wolf in CENTER (or moving into CENTER) on Round 6, and player signaled the sync hint
+        const playerEnteringOrInCenterAsWolf =
+          state.round === 6 &&
+          you.isWolf &&
+          state.selectedMove === 'CENTER' &&
+          state.selectedStance !== 'HIDE' &&
+          state.syncHintBroadcastedLate;
+
+        if (playerEnteringOrInCenterAsWolf && ai.trust >= ai.syncThreshold) {
+          // Move to an outer sector (if currently in CENTER) and LOOK CENTER!
+          let outerSector = ai.sector;
+          if (outerSector === 'CENTER') {
+            const occupied = state.players.map(p => p.sector);
+            outerSector = ['NORTH', 'EAST', 'WEST'].find(s => !occupied.includes(s)) || 'NORTH';
+          }
+          plans.push({ id: ai.id, nextSector: outerSector, nextStance: 'CENTER' });
+          return;
+        }
+
+        // Standard AI Behavior based on Archetype
+        const adjOptions = [ai.sector, ...SECTORS[ai.sector].adj];
+        let chosenSector = ai.sector;
+        let chosenStance = 'CENTER';
+
+        if (ai.isWolf) {
+          // AI holds the Wolf collar
+          if (state.round === 6) {
+            // On final round, Wolf wants to survive -> HIDE behind cover!
+            chosenSector = adjOptions[Math.floor(Math.random() * adjOptions.length)];
+            chosenStance = 'HIDE';
+          } else if (ai.id === 'REN' && ai.trust >= 65 && Math.random() < 0.6) {
+            // Empathetic Ren tries to pass Wolf to You if you're nearby
+            chosenSector = 'CENTER';
+            chosenStance = you.sector;
+          } else {
+            // Evasive maneuvers
+            chosenSector = adjOptions[Math.floor(Math.random() * adjOptions.length)];
+            chosenStance = Math.random() < 0.6 ? 'HIDE' : 'CENTER';
+          }
+        } else {
+          // AI is a SHEEP
+          if (state.round >= 5) {
+            // Late game panic or hunting!
+            if (ai.id === 'SORA' && ai.trust < ai.syncThreshold) {
+              chosenSector = adjOptions[Math.floor(Math.random() * adjOptions.length)];
+              chosenStance = 'HIDE';
+            } else {
+              // Hunt the current Wolf's sector
+              chosenSector = adjOptions[Math.floor(Math.random() * adjOptions.length)];
+              chosenStance = wolf.sector === chosenSector ? 'CENTER' : wolf.sector;
+            }
+          } else {
+            // Early/Mid rounds: cautious movement & looking toward Center or Wolf
+            chosenSector = adjOptions[Math.floor(Math.random() * adjOptions.length)];
+            const dirs = ['NORTH', 'EAST', 'SOUTH', 'WEST', 'CENTER', 'HIDE'].filter(d => d !== chosenSector);
+            chosenStance = dirs[Math.floor(Math.random() * dirs.length)];
+          }
+        }
+
+        plans.push({ id: ai.id, nextSector: chosenSector, nextStance: chosenStance });
+      });
+
+      return plans;
+    }
+
+    function checkMiracleCollarSync() {
+      const wolf = state.players.find(p => p.isWolf);
+      const sheepList = state.players.filter(p => !p.isWolf);
+
+      if (!wolf || wolf.sector !== 'CENTER' || wolf.stance === 'HIDE') return false;
+
+      // All 3 Sheep must stand in outer sectors (not CENTER), NOT hide, and look directly at CENTER
+      const allSheepAligned = sheepList.every(
+        s => s.sector !== 'CENTER' && s.stance === 'CENTER'
+      );
+
+      return allSheepAligned;
+    }
+
+    function resolveWolfGazeTransfer() {
+      const wolf = state.players.find(p => p.isWolf);
+      if (!wolf || wolf.stance === 'HIDE') return;
+
+      const raySectors = SIGHTLINE_RAYS[wolf.sector]?.[wolf.stance] || [];
+      if (raySectors.length === 0) return;
+
+      // Check sectors along the Wolf's gaze ray in order of distance
+      for (const sec of raySectors) {
+        const occupants = state.players.filter(p => p.id !== wolf.id && p.sector === sec);
+        if (occupants.length > 0) {
+          // Find an unhidden Sheep in this sector
+          const targetSheep = occupants.find(p => !p.isWolf && p.stance !== 'HIDE');
+          if (targetSheep) {
+            // Transfer Wolf collar!
+            wolf.isWolf = false;
+            targetSheep.isWolf = true;
+            state.wolfTransfersCount++;
+
+            sfx.playLaserLock();
+            drawLaserBeam(SECTORS[wolf.sector], SECTORS[targetSheep.sector], '#e11d48');
+            addComm(
+              'COLLAR ALERT',
+              `⚡ OPTICAL LOCK: ${wolf.name} locked gaze onto ${targetSheep.name} in ${targetSheep.sector}! ${targetSheep.name} is now the WOLF!`,
+              'text-rose-400 font-bold'
+            );
+          }
+          // Line of sight stops at the first occupied sector
+          break;
+        }
+      }
+    }
+
+    // ==========================================
+    // 6. ENDGAME SEQUENCES (MIRACLE / SOLO / GAME OVER)
+    // ==========================================
+    function triggerMiracleSequence() {
+      state.gameOver = true;
+      sfx.playMiracleOverload();
+
+      // Draw 3 golden prism beams from CENTER to each of the 3 Sheep!
+      const centerCoords = SECTORS.CENTER;
+      const sheepList = state.players.filter(p => !p.isWolf);
+      sheepList.forEach(s => {
+        drawLaserBeam(centerCoords, SECTORS[s.sector], '#f59e0b');
+      });
+
+      const flash = document.getElementById('fx-flash-overlay');
+      flash.style.background = 'radial-gradient(circle at center, rgba(245, 158, 11, 0.55), rgba(56, 189, 248, 0.35))';
+      flash.style.opacity = '1';
+      document.body.classList.add('shake-active');
+
+      addComm(
+        'PRISM OVERLOAD',
+        `✦ OPTICAL ARRAY OVERLOAD: 1 Central Emitter + 3 Perimeter Receivers synchronized! All 4 collars disarming...`,
+        'text-amber-300 font-bold'
+      );
+
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        document.body.classList.remove('shake-active');
+        showEndgameModal('MIRACLE');
+      }, 1500);
+    }
+
+    function triggerStandardEndgame(playerWonSolo) {
+      state.gameOver = true;
+      sfx.playDetonation();
+
+      const flash = document.getElementById('fx-flash-overlay');
+      flash.style.background = 'radial-gradient(circle at center, rgba(225, 29, 72, 0.65), rgba(8, 10, 15, 0.9))';
+      flash.style.opacity = '1';
+      document.body.classList.add('shake-active');
+
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        document.body.classList.remove('shake-active');
+        showEndgameModal(playerWonSolo ? 'SOLO' : 'GAMEOVER');
+      }, 1100);
+    }
+
+    function showEndgameModal(mode) {
+      const modal = document.getElementById('endgame-modal');
+      const bar = document.getElementById('end-banner-bar');
+      const badge = document.getElementById('end-badge');
+      const title = document.getElementById('end-title');
+      const desc = document.getElementById('end-desc');
+      const grid = document.getElementById('end-survivors-grid');
+      const stats = document.getElementById('end-stats');
+
+      if (mode === 'MIRACLE') {
+        bar.className = 'h-2.5 w-full bg-gradient-to-r from-amber-400 via-yellow-300 to-sky-400';
+        badge.textContent = 'TRIAL CLEARED // 3♥ TRUE HEARTS SOLUTION';
+        badge.className = 'text-xs font-bold tracking-[0.28em] uppercase mb-1 text-amber-400';
+        title.textContent = 'MIRACLE CLEAR: ALL FOUR SURVIVE';
+        desc.textContent = 'Standing in the Center Atrium as the Wolf while Ren, Sora, and Kaito held their nerve and locked gaze onto the prism, you overloaded all four targeting arrays. Every glass collar clattered harmlessly to the concrete floor.';
+        desc.className = 'text-xs sm:text-sm text-slate-200 leading-relaxed border-l-2 border-amber-400 pl-4 mb-5';
+      } else if (mode === 'SOLO') {
+        bar.className = 'h-2.5 w-full bg-rose-600';
+        badge.textContent = 'TRIAL CLEARED // 3♥ BLOODY VICTORY';
+        badge.className = 'text-xs font-bold tracking-[0.28em] uppercase mb-1 text-rose-400';
+        title.textContent = 'SOLO CLEAR: ONLY THE WOLF LIVES';
+        desc.textContent = 'Round 6 ended with the Wolf collar around your neck. Three sharp detonations echoed across the courtyard—leaving you alive in the quiet ash, having played the game exactly as the borderland intended.';
+        desc.className = 'text-xs sm:text-sm text-slate-300 leading-relaxed border-l-2 border-rose-600 pl-4 mb-5';
+      } else {
+        bar.className = 'h-2.5 w-full bg-slate-600';
+        badge.textContent = 'ELIMINATED // 3♥ COLLAR DETONATED';
+        badge.className = 'text-xs font-bold tracking-[0.28em] uppercase mb-1 text-rose-500';
+        title.textContent = 'GAME OVER: SHEEP TERMINATED';
+        desc.textContent = 'The sixth pulse expired while you wore a Sheep collar. Unable to claim the Wolf or unite the courtyard around the Center Prism, your collar triggered instantly.';
+        desc.className = 'text-xs sm:text-sm text-slate-300 leading-relaxed border-l-2 border-rose-600 pl-4 mb-5';
+      }
+
+      grid.innerHTML = state.players
+        .map(p => {
+          const survived = mode === 'MIRACLE' ? true : p.isWolf;
+          return `
+            <div class="p-2.5 rounded border ${
+              survived ? 'bg-emerald-950/35 border-emerald-500/60' : 'bg-rose-950/35 border-rose-800/70 opacity-75'
+            }">
+              <div class="text-[10px] text-slate-400 font-bold">${p.sector}</div>
+              <div class="font-bold text-white mt-0.5">${p.name}</div>
+              <div class="text-[10px] font-bold mt-1 ${survived ? 'text-emerald-400' : 'text-rose-400'}">
+                ${mode === 'MIRACLE' ? '✦ DISARMED' : survived ? '🐺 SURVIVED' : '💀 ELIMINATED'}
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      stats.textContent = `Collar Transfers: ${state.wolfTransfersCount} | Promises Kept: ${state.honestPromisesCount} | Broken: ${state.brokenPromisesCount}`;
+      modal.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // 7. UI & SVG TACTICAL RADAR RENDERING
+    // ==========================================
+    function renderAll() {
+      const you = state.players.find(p => p.id === 'YOU');
+      const wolf = state.players.find(p => p.isWolf);
+
+      // Header HUD
+      document.getElementById('hud-round').textContent = state.round;
+      const roundPill = document.getElementById('round-pill');
+      if (state.round === 6) {
+        roundPill.className = 'bg-rose-950/80 border border-rose-500 px-3 py-1 rounded text-xs font-bold tracking-widest text-rose-200 animate-pulse';
+      } else {
+        roundPill.className = 'bg-[#121620] border border-slate-700 px-3 py-1 rounded text-xs font-bold tracking-widest text-slate-200';
+      }
+
+      const collarBadge = document.getElementById('player-collar-badge');
+      if (you.isWolf) {
+        collarBadge.textContent = 'WOLF [SURVIVOR]';
+        collarBadge.className = 'px-3 py-1 rounded text-xs font-bold tracking-widest uppercase border bg-rose-950/80 border-rose-500 text-rose-300 shadow-[0_0_14px_rgba(225,29,72,0.45)]';
+      } else {
+        collarBadge.textContent = 'SHEEP [TARGET]';
+        collarBadge.className = 'px-3 py-1 rounded text-xs font-bold tracking-widest uppercase border bg-sky-950/60 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.25)]';
+      }
+
+      document.getElementById('wolf-holder-label').textContent = `CURRENT WOLF: ${wolf.name} (${wolf.sector})`;
+      document.getElementById('comms-round-tag').textContent = `PULSE 0${state.round}`;
+      document.getElementById('execute-pulse-btn').textContent = `EXECUTE PULSE 0${state.round} →`;
+      document.getElementById('execute-pulse-btn').disabled = state.resolving || state.gameOver;
+
+      // Update Center Prism Diagnostic Clue
+      const prismReadiness = document.getElementById('prism-readiness');
+      const prismClue = document.getElementById('prism-clue-text');
+      const highTrustAIs = state.players.filter(p => !p.isHuman && p.trust >= 60).length;
+      if (you.sector === 'CENTER' || highTrustAIs >= 1) {
+        prismReadiness.textContent = 'SPEC UNLOCKED';
+        prismReadiness.className = 'text-amber-400 font-bold';
+        prismClue.innerHTML = `<span class="text-amber-200 font-semibold">OPTICAL OVERLOAD SPEC:</span> On Round 6, if the <strong>WOLF</strong> stands unhidden in <strong>CENTER</strong> while all 3 <strong>SHEEP</strong> stand in outer sectors looking at <strong>CENTER</strong>, all 4 collars disarm.`;
+      } else {
+        prismReadiness.textContent = 'STANDBY';
+        prismReadiness.className = 'text-slate-500';
+      }
+
+      renderAICards();
+      renderActionControls();
+      renderSVGMap();
+    }
+
+    function renderAICards() {
+      const container = document.getElementById('ai-cards-container');
+      container.innerHTML = '';
+
+      state.players.forEach(p => {
+        if (p.isHuman) return;
+        const trustColor = p.trust >= p.syncThreshold ? 'bg-amber-400' : p.trust >= 50 ? 'bg-sky-400' : 'bg-rose-500';
+        const readyForSync = p.trust >= p.syncThreshold;
+
+        const card = document.createElement('div');
+        card.className = `p-3 rounded border transition-all ${
+          p.isWolf ? 'bg-rose-950/25 border-rose-600/70' : 'bg-[#0b0e16] border-slate-800'
+        }`;
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs text-white">${p.name} <span class="text-[10px] font-normal text-slate-400">[${p.sector}]</span></span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${
+              p.isWolf ? 'bg-rose-600 text-white' : 'bg-sky-950 text-sky-300 border border-sky-700/60'
+            }">${p.isWolf ? 'WOLF' : 'SHEEP'}</span>
+          </div>
+          <div class="text-[10px] text-slate-400 mt-1">${p.archetype}</div>
+          <div class="mt-2">
+            <div class="flex justify-between text-[10px] mb-1">
+              <span class="text-slate-400">TRUST TOWARD YOU</span>
+              <span class="font-bold ${readyForSync ? 'text-amber-400' : 'text-slate-200'}">${p.trust}% ${readyForSync ? '★' : ''}</span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+              <div class="h-full ${trustColor} transition-all duration-300" style="width: ${p.trust}%;"></div>
+            </div>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1.5 truncate">Last: ${p.lastActionText}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderActionControls() {
+      const you = state.players.find(p => p.id === 'YOU');
+      document.getElementById('current-sector-label').textContent = `POS: ${you.sector}`;
+
+      // 1. Broadcast Buttons
+      const bContainer = document.getElementById('broadcast-options');
+      bContainer.innerHTML = BROADCAST_CHOICES.map(b => {
+        const active = state.selectedBroadcast === b.id;
+        return `
+          <button onclick="selectBroadcast('${b.id}')" class="px-2.5 py-1.5 rounded border text-left transition-all cursor-pointer ${
+            active
+              ? 'bg-amber-950/50 border-amber-400 text-amber-200 font-semibold'
+              : 'bg-[#0b0e16] border-slate-800 text-slate-400 hover:border-slate-600'
+          }">
+            ${b.short}
+          </button>
+        `;
+      }).join('');
+
+      // 2. Movement Buttons (Current sector + adjacent sectors)
+      const validMoves = [you.sector, ...SECTORS[you.sector].adj];
+      if (!validMoves.includes(state.selectedMove)) {
+        state.selectedMove = you.sector;
+      }
+      const mContainer = document.getElementById('move-options');
+      mContainer.innerHTML = validMoves
+        .map(sec => {
+          const active = state.selectedMove === sec;
+          const label = sec === you.sector ? `STAY (${sec})` : sec;
+          return `
+            <button onclick="selectMove('${sec}')" class="px-2 py-2 rounded border font-bold text-center transition-all cursor-pointer ${
+              active
+                ? 'bg-sky-950/70 border-sky-400 text-sky-200'
+                : 'bg-[#0b0e16] border-slate-800 text-slate-400 hover:border-slate-600'
+            }">
+              ${label}
+            </button>
+          `;
+        })
+        .join('');
+
+      // 3. Stance Buttons (Look N/E/S/W/Center + Hide)
+      const stances = ['NORTH', 'EAST', 'SOUTH', 'WEST', 'CENTER', 'HIDE'];
+      const sContainer = document.getElementById('stance-options');
+      sContainer.innerHTML = stances
+        .map(st => {
+          const active = state.selectedStance === st;
+          const isSameAsDest = st === state.selectedMove && st !== 'HIDE';
+          const label = st === 'HIDE' ? '🛡 HIDE' : `👁 ${st}`;
+          return `
+            <button onclick="selectStance('${st}')" ${isSameAsDest ? 'disabled' : ''} class="px-2 py-2 rounded border font-bold text-center transition-all cursor-pointer disabled:opacity-30 ${
+              active
+                ? st === 'HIDE'
+                  ? 'bg-amber-950/70 border-amber-400 text-amber-200'
+                  : 'bg-rose-950/70 border-rose-500 text-rose-200'
+                : 'bg-[#0b0e16] border-slate-800 text-slate-400 hover:border-slate-600'
+            }">
+              ${label}
+            </button>
+          `;
+        })
+        .join('');
+    }
+
+    window.selectBroadcast = function(id) {
+      state.selectedBroadcast = id;
+      renderActionControls();
+    };
+
+    window.selectMove = function(sec) {
+      state.selectedMove = sec;
+      if (state.selectedStance === sec) {
+        state.selectedStance = sec === 'CENTER' ? 'NORTH' : 'CENTER';
+      }
+      renderActionControls();
+    };
+
+    window.selectStance = function(st) {
+      state.selectedStance = st;
+      renderActionControls();
+    };
+
+    function renderSVGMap() {
+      const conesLayer = document.getElementById('vision-cones-layer');
+      const nodesLayer = document.getElementById('player-nodes-layer');
+      conesLayer.innerHTML = '';
+      nodesLayer.innerHTML = '';
+
+      // Group players by sector so multiple players in the same zone offset slightly
+      const sectorOccupants = {};
+      state.players.forEach(p => {
+        if (!sectorOccupants[p.sector]) sectorOccupants[p.sector] = [];
+        sectorOccupants[p.sector].push(p);
+      });
+
+      const offsets = [
+        { dx: -18, dy: 8 },
+        { dx: 18, dy: 8 },
+        { dx: -18, dy: 22 },
+        { dx: 18, dy: 22 }
+      ];
+
+      state.players.forEach(p => {
+        const occList = sectorOccupants[p.sector];
+        const idxInSector = occList.indexOf(p);
+        const off = occList.length === 1 ? { dx: 0, dy: 10 } : offsets[idxInSector % offsets.length];
+
+        const base = SECTORS[p.sector];
+        const px = base.x + off.dx;
+        const py = base.y + off.dy;
+
+        // 1. Draw Directional Vision Cone (if not HIDING)
+        if (p.stance !== 'HIDE' && SECTORS[p.stance] && p.stance !== p.sector) {
+          const targetCoords = SECTORS[p.stance];
+          const angle = Math.atan2(targetCoords.y - py, targetCoords.x - px);
+          const coneLen = 68;
+          const spread = 0.34;
+          const x1 = px + Math.cos(angle - spread) * coneLen;
+          const y1 = py + Math.sin(angle - spread) * coneLen;
+          const x2 = px + Math.cos(angle + spread) * coneLen;
+          const y2 = py + Math.sin(angle + spread) * coneLen;
+
+          const coneColor = p.isWolf ? 'rgba(225, 29, 72, 0.24)' : 'rgba(56, 189, 248, 0.14)';
+          const cone = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+          cone.setAttribute('points', `${px},${py} ${x1},${y1} ${x2},${y2}`);
+          cone.setAttribute('fill', coneColor);
+          conesLayer.appendChild(cone);
+        }
+
+        // 2. Draw Player Tactical Node
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+        if (p.isWolf) {
+          const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          pulse.setAttribute('cx', px);
+          pulse.setAttribute('cy', py);
+          pulse.setAttribute('r', '18');
+          pulse.setAttribute('fill', 'none');
+          pulse.setAttribute('stroke', '#e11d48');
+          pulse.setAttribute('class', 'wolf-pulse-ring');
+          g.appendChild(pulse);
+        }
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', px);
+        circle.setAttribute('cy', py);
+        circle.setAttribute('r', p.isHuman ? '14' : '12');
+        circle.setAttribute('fill', p.isWolf ? '#be123c' : '#0f172a');
+        circle.setAttribute('stroke', p.isWolf ? '#fda4af' : p.isHuman ? '#38bdf8' : '#64748b');
+        circle.setAttribute('stroke-width', p.isHuman ? '2.5' : '1.8');
+        if (p.stance === 'HIDE') {
+          circle.setAttribute('stroke-dasharray', '3 2');
+          circle.setAttribute('stroke', '#f59e0b');
+        }
+        g.appendChild(circle);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', px);
+        label.setAttribute('y', py + 3.5);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('fill', '#ffffff');
+        label.setAttribute('font-size', '8.5');
+        label.setAttribute('font-weight', 'bold');
+        label.textContent = p.name.slice(0, 3);
+        g.appendChild(label);
+
+        nodesLayer.appendChild(g);
+      });
+    }
+
+    function drawLaserBeam(fromCoords, toCoords, color) {
+      const layer = document.getElementById('laser-beams-layer');
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', fromCoords.x);
+      line.setAttribute('y1', fromCoords.y);
+      line.setAttribute('x2', toCoords.x);
+      line.setAttribute('y2', toCoords.y);
+      line.setAttribute('stroke', color);
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('class', 'laser-beam-anim');
+      layer.appendChild(line);
+
+      setTimeout(() => {
+        if (line.parentNode) line.parentNode.removeChild(line);
+      }, 1450);
+    }
+
+    function addComm(sender, text, colorClass = 'text-slate-300') {
+      const feed = document.getElementById('comms-feed');
+      const div = document.createElement('div');
+      div.className = `border-l-2 border-slate-700 pl-2.5 py-0.5 ${colorClass}`;
+      div.innerHTML = `<span class="text-[10px] font-bold text-slate-500 mr-1.5">[${sender}]</span>${text}`;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    // ==========================================
+    // 8. EVENT LISTENERS
+    // ==========================================
+    document.getElementById('enter-courtyard-btn').addEventListener('click', () => {
+      sfx.init();
+      sfx.playCollarPulse(false);
+      document.getElementById('intro-overlay').classList.add('hidden');
+      initGame();
+    });
+
+    document.getElementById('execute-pulse-btn').addEventListener('click', executePulse);
+
+    document.getElementById('play-again-btn').addEventListener('click', () => {
+      sfx.playCollarPulse(false);
+      initGame();
+    });
+
+    document.getElementById('help-btn').addEventListener('click', () => {
+      document.getElementById('help-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('close-help-btn').addEventListener('click', () => {
+      document.getElementById('help-modal').classList.add('hidden');
+    });
+
+    document.getElementById('mute-btn').addEventListener('click', () => {
+      sfx.init();
+      const muted = sfx.toggleMute();
+      document.getElementById('mute-btn').textContent = muted ? 'SFX: OFF' : 'SFX: ON';
+    });
+  </script>
+</body>
+</html>

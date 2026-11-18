@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE PANOPTICON BANQUET // King of Hearts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-obsidian: #070709;
+      --panel-marble: #101015;
+      --border-slate: #262630;
+      --crimson-blood: #991b1b;
+      --crimson-bright: #ef4444;
+      --gold-stark: #d4af37;
+      --gold-dim: #856a1c;
+      --text-bone: #e5e5ea;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-obsidian);
+      color: var(--text-bone);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .font-serif-crown {
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Atmospheric Vignette & Marble Grain */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.88) 100%);
+      z-index: 40;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 41;
+      opacity: 0.35;
+    }
+
+    /* Starvation Hallucination Effects (Active when Player Vitality < 35%) */
+    @keyframes hallucinationTremor {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-1.5px, 1px) rotate(-0.3deg); }
+      50% { transform: translate(1.5px, -1px) rotate(0.3deg); }
+      75% { transform: translate(-1px, -1.5px) rotate(-0.2deg); }
+    }
+
+    @keyframes textFlicker {
+      0%, 100% { opacity: 1; text-shadow: 0 0 0 transparent; }
+      48% { opacity: 1; }
+      50% { opacity: 0.55; text-shadow: -2px 0 #ef4444, 2px 0 #d4af37; }
+      52% { opacity: 0.95; }
+    }
+
+    body.starving-hallucination .hallucinate-tremor {
+      animation: hallucinationTremor 0.35s infinite;
+    }
+
+    body.starving-hallucination .hallucinate-text {
+      animation: textFlicker 2.8s infinite;
+    }
+
+    body.starving-hallucination .vignette {
+      background: radial-gradient(circle at center, rgba(127, 29, 29, 0.08) 35%, rgba(0, 0, 0, 0.95) 100%);
+    }
+
+    /* Seat Card Styling */
+    .seat-node {
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .seat-node:hover:not(.eliminated) {
+      transform: translate(-50%, -50%) scale(1.06) !important;
+      z-index: 30;
+    }
+
+    .seat-node.selected-target {
+      border-color: #d4af37 !important;
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.45);
+    }
+
+    .seat-node.eliminated {
+      opacity: 0.36;
+      filter: grayscale(100%);
+    }
+
+    /* Surrender Bell Pulse */
+    @keyframes bellGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(212, 175, 55, 0.2); }
+      50% { box-shadow: 0 0 18px rgba(212, 175, 55, 0.5); }
+    }
+
+    .bell-btn {
+      animation: bellGlow 3.2s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2c2c38;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #991b1b;
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-between relative selection:bg-red-900 selection:text-white">
+
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+
+  <!-- START / BRIEFING OVERLAY -->
+  <div id="start-overlay" class="fixed inset-0 z-50 bg-[#070709] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div class="max-w-2xl w-full bg-[#101015] border border-zinc-800 rounded-lg p-6 sm:p-8 shadow-2xl my-auto">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
+        <span class="text-[11px] tracking-[0.3em] text-amber-500 uppercase font-semibold">Borderland Citadel // King of Hearts</span>
+        <span class="text-[11px] tracking-widest text-red-500 font-bold">DIFFICULTY: K♥</span>
+      </div>
+
+      <h1 class="font-serif-crown text-2xl sm:text-4xl font-bold tracking-wider text-zinc-100 mb-3">
+        THE PANOPTICON BANQUET
+      </h1>
+      <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-5">
+        Ten guests sit around an obsidian table. There is <span class="text-zinc-200 font-semibold">no time limit</span> and <span class="text-zinc-200 font-semibold">no round cap</span>. You survive only as long as your Vitality holds—and as long as the table allows you to breathe.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-6">
+        <div class="bg-[#09090c] border border-zinc-800/90 p-3.5 rounded">
+          <div class="text-amber-400 font-bold tracking-wider uppercase mb-1">THE TWO-BODIED KING</div>
+          <p class="text-zinc-400 leading-relaxed">
+            8 Citizens (You + 7 AI) face <span class="text-red-400 font-semibold">2 Sovereigns</span> secretly acting as one King of Hearts. Both Sovereigns must be purged to clear the game.
+          </p>
+        </div>
+        <div class="bg-[#09090c] border border-zinc-800/90 p-3.5 rounded">
+          <div class="text-emerald-400 font-bold tracking-wider uppercase mb-1">VITALITY & REGENERATION</div>
+          <p class="text-zinc-400 leading-relaxed">
+            Every Day drains <span class="text-red-400">-14 Vitality</span>. Restore Vitality via <span class="text-zinc-200">Pantry Rations (+22)</span>, <span class="text-zinc-200">Mutual Solidarity Pacts (+12)</span>, <span class="text-zinc-200">Bread Gifts (+14)</span>, or <span class="text-zinc-200">Purging a Sovereign (+25)</span>.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-800 pt-4">
+        <span class="text-[11px] text-zinc-500 italic">Warning: Below 35% Vitality induces cognitive hallucinations.</span>
+        <button id="start-game-btn" class="w-full sm:w-auto px-6 py-3 bg-red-900 hover:bg-red-800 text-zinc-100 text-xs font-bold tracking-[0.22em] uppercase rounded border border-red-500/50 transition-all cursor-pointer">
+          Take Seat I
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAVIGATION & STATUS BAR -->
+  <header class="relative z-30 w-full bg-[#0b0b0f]/95 border-b border-zinc-800/90 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex items-center space-x-3 sm:space-x-5">
+      <div>
+        <span class="font-serif-crown text-sm sm:text-base font-bold tracking-wider text-zinc-100">PANOPTICON BANQUET</span>
+        <span class="hidden md:inline-block ml-2 text-[10px] tracking-[0.25em] text-amber-500/90 uppercase">// K♥ TRIAL</span>
+      </div>
+
+      <div class="flex items-center space-x-2 bg-[#13131a] border border-zinc-800 px-3 py-1 rounded text-xs">
+        <span class="text-zinc-500">DAY</span>
+        <span id="hud-day" class="text-amber-400 font-bold">1</span>
+        <span class="text-zinc-700">|</span>
+        <span id="hud-phase" class="text-zinc-200 font-semibold tracking-wider uppercase text-[11px]">MORNING RATIONING</span>
+      </div>
+    </div>
+
+    <!-- Player Vitality + Controls -->
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <!-- Player Vitality Pill -->
+      <div class="flex items-center space-x-2 bg-[#13131a] border border-zinc-800 px-3 py-1 rounded">
+        <span class="text-[10px] tracking-widest text-zinc-400 uppercase">YOUR VITALITY</span>
+        <span id="hud-player-vit" class="text-xs sm:text-sm font-bold text-emerald-400">100%</span>
+      </div>
+
+      <!-- Sound Toggle -->
+      <button id="audio-toggle-btn" class="px-2.5 py-1.5 bg-[#13131a] hover:bg-zinc-800 border border-zinc-800 rounded text-[10px] tracking-widest text-zinc-400 uppercase cursor-pointer transition-colors">
+        SFX: ON
+      </button>
+
+      <!-- Permanently Accessible Surrender Bell -->
+      <button id="surrender-btn" class="bell-btn px-3 py-1.5 bg-[#1a1408] hover:bg-amber-900/50 border border-amber-500/70 text-amber-300 rounded text-[10px] sm:text-xs font-bold tracking-widest uppercase cursor-pointer transition-all">
+        🔔 RING THE BELL (SURRENDER)
+      </button>
+    </div>
+  </header>
+
+  <!-- STARVATION HALLUCINATION WARNING BANNER -->
+  <div id="hallucination-banner" class="hidden relative z-30 bg-red-950/90 border-b border-red-700 px-4 py-1 text-center text-[11px] tracking-[0.2em] text-red-200 uppercase animate-pulse">
+    ⚠ CRITICAL STARVATION (&lt;35% VITALITY): COGNITIVE DECAY ACTIVE — DO NOT TRUST ALL WHISPER LOGS ⚠
+  </div>
+
+  <!-- MAIN WORKSPACE: LEFT/CENTER CIRCULAR TABLE + RIGHT ACTION/LEDGER CONSOLE -->
+  <main class="relative z-20 flex-1 w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 sm:p-5 items-stretch">
+
+    <!-- LEFT 7 COLS: 10-SEAT CIRCULAR BANQUET TABLE -->
+    <section class="lg:col-span-7 bg-[#0c0c11] border border-zinc-800/90 rounded-lg p-3 sm:p-4 flex flex-col justify-between relative overflow-hidden min-h-[470px] sm:min-h-[560px]">
+      
+      <!-- Top Table Metadata -->
+      <div class="flex items-center justify-between text-[11px] text-zinc-500 border-b border-zinc-800/80 pb-2 z-10">
+        <span>LIVING GUESTS: <strong id="hud-alive-count" class="text-zinc-200">10 / 10</strong></span>
+        <span id="hud-crown-status" class="text-red-400 font-semibold tracking-wider">SOVEREIGNS REMAINING: 2</span>
+      </div>
+
+      <!-- Circular Table Visual Arena -->
+      <div id="table-arena" class="relative flex-1 w-full flex items-center justify-center my-2">
+        
+        <!-- Outer Marble Table Ring -->
+        <div class="w-[270px] h-[270px] sm:w-[390px] sm:h-[390px] md:w-[430px] md:h-[430px] rounded-full border-2 border-zinc-800 bg-gradient-to-b from-[#13131a] to-[#09090d] shadow-[inset_0_0_50px_rgba(0,0,0,0.95),0_0_40px_rgba(0,0,0,0.8)] flex items-center justify-center relative">
+          
+          <!-- Inner Gold Filigree Circle -->
+          <div class="w-[175px] h-[175px] sm:w-[245px] sm:h-[245px] rounded-full border border-amber-500/20 flex flex-col items-center justify-center text-center p-3 bg-[#0a0a0e]/90 shadow-inner">
+            <div class="text-[9px] sm:text-[10px] tracking-[0.25em] text-amber-500/80 uppercase mb-1">BANQUET PANTRY</div>
+            <div class="flex items-baseline space-x-1">
+              <span id="pantry-count" class="font-serif-crown text-2xl sm:text-4xl font-bold text-zinc-100">36</span>
+              <span class="text-[10px] sm:text-xs text-zinc-500">/ 36 RATIONS</span>
+            </div>
+            <div class="w-24 sm:w-32 h-1.5 bg-zinc-900 rounded-full overflow-hidden mt-2 border border-zinc-800">
+              <div id="pantry-bar" class="h-full bg-amber-500 transition-all duration-500" style="width: 100%;"></div>
+            </div>
+            <div class="mt-2 text-[9px] sm:text-[10px] text-zinc-500 leading-tight">
+              1 Ration = <span class="text-emerald-400">+22 VIT</span><br/>
+              Daily Decay = <span class="text-red-400">-14 VIT</span>
+            </div>
+          </div>
+
+          <!-- 10 Seat Nodes Injected Dynamically Here -->
+          <div id="seats-layer" class="absolute inset-0"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Quick Legend / Selected Seat Inspector -->
+      <div id="seat-inspector" class="z-10 bg-[#111117] border border-zinc-800 rounded p-2.5 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+        <div>
+          <span class="text-[10px] tracking-widest text-zinc-500 uppercase block">SELECTED SEAT DOSSIER</span>
+          <span id="inspector-title" class="font-bold text-zinc-200">Click any seat around the table to inspect behavior & trust</span>
+        </div>
+        <div id="inspector-stats" class="flex items-center space-x-3 text-[11px] text-zinc-400">
+          <!-- Populated when clicking a seat -->
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT 5 COLS: PHASE CONSOLE, PUBLIC LEDGER & CHRONICLE LOG -->
+    <section class="lg:col-span-5 flex flex-col gap-4">
+
+      <!-- ACTIVE PHASE CONTROL CARD -->
+      <div class="bg-[#101015] border border-zinc-800 rounded-lg p-4 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-2 mb-3">
+            <span id="phase-card-badge" class="text-[11px] font-bold tracking-[0.22em] text-amber-400 uppercase">PHASE I // MORNING RATIONING</span>
+            <span id="phase-card-sub" class="text-[10px] text-zinc-500 uppercase">Pantry Never Refills</span>
+          </div>
+
+          <p id="phase-instructions" class="text-xs text-zinc-300 leading-relaxed mb-4">
+            The silver cloches are lifted. Vote on how the Banquet Pantry distributes food and water today before daily metabolic decay (-14 Vitality) strikes.
+          </p>
+
+          <!-- Dynamic Interactive Controls Area -->
+          <div id="phase-controls" class="space-y-2.5">
+            <!-- Populated per phase -->
+          </div>
+        </div>
+      </div>
+
+      <!-- PUBLIC LEDGER (TELEMETRY CLUES) -->
+      <div class="bg-[#0e0e13] border border-zinc-800/90 rounded-lg p-4">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2.5">
+          <span class="text-[11px] font-bold tracking-[0.22em] text-red-400 uppercase">THE PUBLIC LEDGER</span>
+          <span class="text-[10px] text-zinc-500">1 ENTRY MAY BE FALSIFIED</span>
+        </div>
+        <ul id="ledger-list" class="space-y-2 text-xs text-zinc-300">
+          <li class="text-zinc-500 italic">The Ledger records network whispers and pantry anomalies at dusk...</li>
+        </ul>
+      </div>
+
+      <!-- BANQUET CHRONICLE / WHISPER FEED -->
+      <div class="flex-1 bg-[#0b0b0f] border border-zinc-800/90 rounded-lg p-4 flex flex-col min-h-[190px] max-h-[270px]">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2">
+          <span class="text-[11px] font-bold tracking-[0.22em] text-zinc-400 uppercase">TABLE CHRONICLE & WHISPERS</span>
+          <span id="chronicle-count" class="text-[10px] text-zinc-600">DAY 1</span>
+        </div>
+        <div id="chronicle-log" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs leading-relaxed">
+          <!-- Chronological log entries -->
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ENDGAME DEBRIEF MODAL -->
+  <div id="endgame-modal" class="hidden fixed inset-0 z-50 bg-[#060608]/95 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="max-w-3xl w-full bg-[#101015] border border-zinc-800 rounded-lg p-6 sm:p-8 shadow-2xl my-auto">
+      <div id="end-badge" class="text-xs font-bold tracking-[0.3em] uppercase mb-1"></div>
+      <h2 id="end-title" class="font-serif-crown text-2xl sm:text-3xl font-bold text-zinc-100 tracking-wider mb-3"></h2>
+      <p id="end-summary" class="text-xs sm:text-sm text-zinc-300 leading-relaxed border-l-2 border-red-700 pl-4 mb-6"></p>
+
+      <!-- True Identities Grid (All 10 Seats) -->
+      <div class="mb-6">
+        <div class="text-[11px] font-bold tracking-[0.22em] text-amber-400 uppercase mb-2.5">
+          TRUE IDENTITIES AT THE TABLE
+        </div>
+        <div id="end-roles-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+          <!-- Populated on Game End -->
+        </div>
+      </div>
+
+      <!-- Sovereign Hidden Coordination Log -->
+      <div class="bg-[#09090c] border border-zinc-800 rounded p-4 mb-6 max-h-40 overflow-y-auto">
+        <div class="text-[10px] font-bold tracking-[0.22em] text-red-400 uppercase mb-2">
+          SOVEREIGN HIVE-MIND COORDINATION LOG
+        </div>
+        <ul id="end-sovereign-log" class="space-y-1.5 text-[11px] text-zinc-400">
+          <!-- Populated on Game End -->
+        </ul>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-zinc-800">
+        <div id="end-metrics" class="text-xs text-zinc-400"></div>
+        <button id="play-again-btn" class="w-full sm:w-auto px-6 py-2.5 bg-red-900 hover:bg-red-800 text-zinc-100 text-xs font-bold tracking-[0.2em] uppercase rounded border border-red-500/40 transition-all cursor-pointer">
+          Re-Enter The Panopticon
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * THE PANOPTICON BANQUET (King of Hearts)
+     * 10-Player Asymmetric Social Deduction & Resource Endurance Game
+     */
+
+    // ==========================================
+    // 1. PROCEDURAL WEB AUDIO ENGINE
+    // ==========================================
+    class BanquetAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.droneOsc = null;
+        this.droneGain = null;
+        this.heartbeatTimer = null;
+      }
+
+      init() {
+        if (this.ctx) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.startSubDrone();
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        if (this.droneGain && this.ctx) {
+          this.droneGain.gain.setTargetAtTime(this.muted ? 0 : 0.05, this.ctx.currentTime, 0.1);
+        }
+        return this.muted;
+      }
+
+      startSubDrone() {
+        if (!this.ctx) return;
+        this.droneOsc = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        this.droneGain = this.ctx.createGain();
+
+        this.droneOsc.type = 'sawtooth';
+        this.droneOsc.frequency.value = 46; // Deep F#1 rumble
+        filter.type = 'lowpass';
+        filter.frequency.value = 115;
+        this.droneGain.gain.value = this.muted ? 0 : 0.05;
+
+        this.droneOsc.connect(filter);
+        filter.connect(this.droneGain);
+        this.droneGain.connect(this.ctx.destination);
+        this.droneOsc.start();
+      }
+
+      playPlateClink() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        [2100, 3420].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.055 / (idx + 1), now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        });
+      }
+
+      playWhisperTone() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(520, now);
+        osc.frequency.exponentialRampToValueAtTime(340, now + 0.16);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      }
+
+      playGavelStrike() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(28, now + 0.45);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+
+      playSurrenderBell() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        [880, 1318.5, 1760, 2637].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.08 / (i + 1), now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.65);
+        });
+      }
+
+      setStarvationHeartbeat(active) {
+        if (active && !this.heartbeatTimer) {
+          this.heartbeatTimer = setInterval(() => {
+            if (this.muted || !this.ctx) return;
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(62, now);
+            osc.frequency.exponentialRampToValueAtTime(30, now + 0.16);
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.2);
+          }, 950);
+        } else if (!active && this.heartbeatTimer) {
+          clearInterval(this.heartbeatTimer);
+          this.heartbeatTimer = null;
+        }
+      }
+    }
+
+    const sfx = new BanquetAudio();
+
+    // ==========================================
+    // 2. AI ARCHETYPES & GUEST ROSTER
+    // ==========================================
+    const AI_PROFILES = [
+      { name: 'Kaelen', archetype: 'Stoic Analyst', baseAltruism: 0.45, baseParanoia: 0.35 },
+      { name: 'Mireille', archetype: 'Empath', baseAltruism: 0.85, baseParanoia: 0.25 },
+      { name: 'Vesper', archetype: 'Opportunist', baseAltruism: 0.20, baseParanoia: 0.55 },
+      { name: 'Dorian', archetype: 'Zealot', baseAltruism: 0.40, baseParanoia: 0.70 },
+      { name: 'Sora', archetype: 'Paranoiac', baseAltruism: 0.30, baseParanoia: 0.85 },
+      { name: 'Orin', archetype: 'Pragmatist', baseAltruism: 0.55, baseParanoia: 0.40 },
+      { name: 'Lyra', archetype: 'Diplomat', baseAltruism: 0.75, baseParanoia: 0.30 },
+      { name: 'Cassian', archetype: 'Cynic', baseAltruism: 0.25, baseParanoia: 0.65 },
+      { name: 'Nyx', archetype: 'Stoic', baseAltruism: 0.50, baseParanoia: 0.45 }
+    ];
+
+    // ==========================================
+    // 3. MASTER GAME STATE
+    // ==========================================
+    const game = {
+      day: 1,
+      phase: 'RATIONING', // RATIONING | WHISPERS | TRIAL | ENDED
+      pantry: 36,
+      maxPantry: 36,
+      players: [],
+      selectedSeatId: null,
+      whispersRemaining: 2,
+      playerWhisperTargetsToday: [], // { targetId, intent }
+      dailyLedger: [],
+      sovereignSecretLog: [],
+      pactsFormedCount: 0,
+      breadSharedCount: 0,
+      gameOver: false
+    };
+
+    // Constants for Vitality Economy
+    const DAILY_DECAY = 14;
+    const RATION_HEAL = 22;
+    const BREAD_COST = 10;
+    const BREAD_HEAL = 14;
+    const SOLIDARITY_BONUS = 12;
+    const SOVEREIGN_PURGE_BONUS = 25;
+    const INNOCENT_PURGE_SHOCK = 12;
+
+    // ==========================================
+    // 4. INITIALIZATION & ROLE ASSIGNMENT
+    // ==========================================
+    function initGame() {
+      game.day = 1;
+      game.phase = 'RATIONING';
+      game.pantry = 36;
+      game.selectedSeatId = 2;
+      game.whispersRemaining = 2;
+      game.playerWhisperTargetsToday = [];
+      game.dailyLedger = [];
+      game.sovereignSecretLog = [];
+      game.pactsFormedCount = 0;
+      game.breadSharedCount = 0;
+      game.gameOver = false;
+
+      // Pick 2 distinct AI seats (indices 1..9) to be the dual-bodied King of Hearts
+      const aiIndices = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      shuffleArray(aiIndices);
+      const sovAIdx = aiIndices[0];
+      const sovBIdx = aiIndices[1];
+
+      // Shuffle AI profiles for variety each run
+      const shuffledProfiles = [...AI_PROFILES];
+      shuffleArray(shuffledProfiles);
+
+      game.players = [];
+      for (let i = 0; i < 10; i++) {
+        const isHuman = i === 0;
+        const isSovereign = i === sovAIdx || i === sovBIdx;
+        const sovereignPersona = i === sovAIdx ? 'WARM_MANIPULATOR' : (i === sovBIdx ? 'DISCORD_SABOTEUR' : null);
+        const profile = isHuman ? { name: 'YOU', archetype: 'Human Subject', baseAltruism: 0.5, baseParanoia: 0.4 } : shuffledProfiles[i - 1];
+
+        game.players.push({
+          id: i + 1, // Seat 1 to Seat 10
+          name: profile.name,
+          isHuman,
+          role: isSovereign ? 'SOVEREIGN' : 'CITIZEN',
+          sovereignPersona,
+          unbound: false,
+          archetype: profile.archetype,
+          vitality: 100,
+          alive: true,
+          deathReason: null,
+          psychState: 'Calm',
+          trustTowardPlayer: isHuman ? 100 : (isSovereign && sovereignPersona === 'WARM_MANIPULATOR' ? 72 : Math.floor(45 + Math.random() * 25)),
+          suspicionScore: 0, // Perceived suspicion around the table
+          paranoia: profile.baseParanoia,
+          altruism: profile.baseAltruism,
+          lastWhisperReply: null
+        });
+      }
+
+      game.sovereignSecretLog.push(
+        `Day 1 Setup: Seat ${sovAIdx + 1} (${game.players[sovAIdx].name} - Warm Manipulator) & Seat ${sovBIdx + 1} (${game.players[sovBIdx].name} - Discord Saboteur) linked as the dual King of Hearts.`
+      );
+
+      document.getElementById('chronicle-log').innerHTML = '';
+      document.getElementById('endgame-modal').classList.add('hidden');
+      addChronicle(`Day 1 begins. 36 Rations rest in the center Pantry. Two among Seats 2–10 share the Crown of Hearts.`, 'text-amber-400 font-semibold');
+
+      updateAllUI();
+      renderPhaseControls();
+    }
+
+    // ==========================================
+    // 5. ADAPTIVE PSYCHOLOGICAL STATE ENGINE
+    // ==========================================
+    function updatePsychologicalStates() {
+      const aliveSovereigns = game.players.filter(p => p.alive && p.role === 'SOVEREIGN');
+      const oneCrownBroken = aliveSovereigns.length === 1;
+
+      game.players.forEach(p => {
+        if (!p.alive || p.isHuman) return;
+
+        if (p.role === 'SOVEREIGN' && oneCrownBroken && !p.unbound) {
+          p.unbound = true;
+          p.psychState = 'Unbound';
+          return;
+        }
+
+        if (p.unbound) {
+          p.psychState = 'Unbound';
+          return;
+        }
+
+        if (p.vitality <= 25) {
+          p.psychState = 'Fractured';
+        } else if (p.vitality <= 48) {
+          p.psychState = 'Desperate';
+        } else if (p.suspicionScore >= 45 || p.paranoia >= 0.72) {
+          p.psychState = 'Fanatical';
+        } else if (p.trustTowardPlayer < 38 || p.paranoia >= 0.52) {
+          p.psychState = 'Guarded';
+        } else {
+          p.psychState = 'Calm';
+        }
+      });
+    }
+
+    // ==========================================
+    // 6. PHASE I: MORNING RATIONING
+    // ==========================================
+    function renderRationingPhase() {
+      const badge = document.getElementById('phase-card-badge');
+      const sub = document.getElementById('phase-card-sub');
+      const instr = document.getElementById('phase-instructions');
+      const controls = document.getElementById('phase-controls');
+
+      badge.textContent = `PHASE I // MORNING RATIONING (DAY ${game.day})`;
+      sub.textContent = `${game.pantry} RATIONS LEFT`;
+      instr.innerHTML = `Choose your vote for today's Pantry allocation. Consuming 1 Ration restores <span class="text-emerald-400 font-semibold">+${RATION_HEAL} Vitality</span> before the daily <span class="text-red-400 font-semibold">-${DAILY_DECAY} Vitality</span> decay.`;
+
+      const aliveCount = game.players.filter(p => p.alive).length;
+      const sparseCount = Math.min(3, aliveCount);
+
+      controls.innerHTML = `
+        <button onclick="executeRationVote('STRICT')" class="w-full text-left p-3 bg-[#15151d] hover:bg-zinc-800/90 border border-zinc-700 hover:border-amber-500/70 rounded transition-all cursor-pointer">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-zinc-100">1. STRICT CONSERVATION (0 Rations)</span>
+            <span class="text-[10px] text-amber-400">0 Pantry Used</span>
+          </div>
+          <p class="text-[11px] text-zinc-400 mt-1">Preserve the Pantry for later days. Everyone suffers full -${DAILY_DECAY} decay today.</p>
+        </button>
+
+        <button onclick="executeRationVote('SPARSE')" ${game.pantry <= 0 ? 'disabled' : ''} class="w-full text-left p-3 bg-[#15151d] hover:bg-zinc-800/90 disabled:opacity-40 border border-zinc-700 hover:border-emerald-500/70 rounded transition-all cursor-pointer">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-emerald-300">2. SPARSE TRIAGE (Lowest ${sparseCount} Vitality Seats)</span>
+            <span class="text-[10px] text-emerald-400">-${Math.min(game.pantry, sparseCount)} Rations</span>
+          </div>
+          <p class="text-[11px] text-zinc-400 mt-1">Distribute 1 Ration each (+${RATION_HEAL} VIT) to the ${sparseCount} weakest living guests.</p>
+        </button>
+
+        <button onclick="executeRationVote('FEAST')" ${game.pantry <= 0 ? 'disabled' : ''} class="w-full text-left p-3 bg-[#15151d] hover:bg-zinc-800/90 disabled:opacity-40 border border-zinc-700 hover:border-red-500/70 rounded transition-all cursor-pointer">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-amber-300">3. COMMUNAL FEAST (1 Ration Per Living Guest)</span>
+            <span class="text-[10px] text-red-400">-${Math.min(game.pantry, aliveCount)} Rations</span>
+          </div>
+          <p class="text-[11px] text-zinc-400 mt-1">Feed all ${aliveCount} living seats (+${RATION_HEAL} VIT each), rapidly depleting the finite Pantry.</p>
+        </button>
+      `;
+    }
+
+    window.executeRationVote = function(playerChoice) {
+      if (game.phase !== 'RATIONING' || game.gameOver) return;
+      sfx.playPlateClink();
+
+      const votes = { STRICT: 0, SPARSE: 0, FEAST: 0 };
+      votes[playerChoice]++;
+
+      // AI Agents cast ration votes based on Vitality, Altruism, and Sovereign Strategy
+      game.players.forEach(p => {
+        if (!p.alive || p.isHuman) return;
+        let choice = 'SPARSE';
+        if (game.pantry === 0) {
+          choice = 'STRICT';
+        } else if (p.role === 'SOVEREIGN' && p.sovereignPersona === 'DISCORD_SABOTEUR') {
+          // Saboteur tries to drain pantry early or starve weak citizens later
+          choice = game.pantry > 16 ? 'FEAST' : 'STRICT';
+        } else if (p.vitality <= 55) {
+          choice = game.pantry >= 6 ? 'FEAST' : 'SPARSE';
+        } else if (p.vitality >= 82 && game.pantry < 15) {
+          choice = 'STRICT';
+        } else {
+          choice = p.altruism > 0.6 ? 'SPARSE' : 'STRICT';
+        }
+        votes[choice]++;
+      });
+
+      // Determine winning policy
+      let winningPolicy = 'SPARSE';
+      if (game.pantry === 0) {
+        winningPolicy = 'STRICT';
+      } else if (votes.FEAST > votes.SPARSE && votes.FEAST >= votes.STRICT) {
+        winningPolicy = 'FEAST';
+      } else if (votes.STRICT > votes.SPARSE && votes.STRICT > votes.FEAST) {
+        winningPolicy = 'STRICT';
+      }
+
+      addChronicle(
+        `Ration Vote Tally — Strict: ${votes.STRICT} | Sparse: ${votes.SPARSE} | Feast: ${votes.FEAST}. Enacted: [${winningPolicy}].`,
+        'text-zinc-200'
+      );
+
+      // Distribute Rations
+      const fedNames = [];
+      const alivePlayers = game.players.filter(p => p.alive);
+
+      if (winningPolicy === 'FEAST' && game.pantry > 0) {
+        // Sort by lowest vitality first in case pantry runs dry mid-feast
+        const sorted = [...alivePlayers].sort((a, b) => a.vitality - b.vitality);
+        sorted.forEach(p => {
+          if (game.pantry > 0) {
+            game.pantry--;
+            p.vitality = Math.min(100, p.vitality + RATION_HEAL);
+            fedNames.push(`Seat ${p.id}`);
+          }
+        });
+      } else if (winningPolicy === 'SPARSE' && game.pantry > 0) {
+        const sorted = [...alivePlayers].sort((a, b) => a.vitality - b.vitality);
+        const recipients = sorted.slice(0, Math.min(3, sorted.length));
+        recipients.forEach(p => {
+          if (game.pantry > 0) {
+            game.pantry--;
+            p.vitality = Math.min(100, p.vitality + RATION_HEAL);
+            fedNames.push(`Seat ${p.id}`);
+          }
+        });
+      }
+
+      if (fedNames.length > 0) {
+        addChronicle(`Rations (+${RATION_HEAL} VIT) consumed by: ${fedNames.join(', ')}. (${game.pantry} remaining).`, 'text-emerald-400');
+      } else {
+        addChronicle(`No rations distributed today. The silver cloches remain locked.`, 'text-zinc-400');
+      }
+
+      // Apply Daily Metabolic Decay (-14 Vitality) to all living guests
+      const starvedToday = [];
+      game.players.forEach(p => {
+        if (!p.alive) return;
+        p.vitality = Math.max(0, p.vitality - DAILY_DECAY);
+        if (p.vitality === 0) {
+          p.alive = false;
+          p.deathReason = 'Starvation & Dehydration';
+          starvedToday.push(p);
+        }
+      });
+
+      starvedToday.forEach(dead => {
+        addChronicle(`💀 Seat ${dead.id} (${dead.name}) collapsed at the table from total Vitality depletion.`, 'text-red-500 font-bold');
+      });
+
+      updatePsychologicalStates();
+      updateAllUI();
+
+      if (checkEndConditions()) return;
+
+      // Advance to Phase II: Whisper Network
+      game.phase = 'WHISPERS';
+      game.whispersRemaining = 2;
+      game.playerWhisperTargetsToday = [];
+      updateAllUI();
+      renderPhaseControls();
+    };
+
+    // ==========================================
+    // 7. PHASE II: WHISPER NETWORK (VITALITY PACTS & DECEPTION)
+    // ==========================================
+    function renderWhisperPhase() {
+      const badge = document.getElementById('phase-card-badge');
+      const sub = document.getElementById('phase-card-sub');
+      const instr = document.getElementById('phase-instructions');
+      const controls = document.getElementById('phase-controls');
+
+      badge.textContent = `PHASE II // WHISPER NETWORK`;
+      sub.textContent = `${game.whispersRemaining} WHISPER(S) LEFT`;
+
+      const target = game.players.find(p => p.id === game.selectedSeatId && p.alive && !p.isHuman) ||
+                     game.players.find(p => p.alive && !p.isHuman);
+      if (target) game.selectedSeatId = target.id;
+
+      const player = game.players[0];
+      const alreadyTargeted = game.playerWhisperTargetsToday.some(w => w.targetId === target?.id);
+
+      instr.innerHTML = `Select a guest at the table and send up to 2 private whispers. Mutual <span class="text-emerald-400 font-semibold">Solidarity Pacts</span> restore <span class="text-emerald-400 font-semibold">+${SOLIDARITY_BONUS} VIT</span> to both seats without draining the Pantry.`;
+
+      if (!target || game.whispersRemaining <= 0) {
+        controls.innerHTML = `
+          <div class="p-3 bg-[#14141c] border border-zinc-800 rounded text-xs text-zinc-300 mb-3">
+            You have exhausted your whispers for Day ${game.day}. Proceed to dusk to inspect the Public Ledger and cast Trial votes.
+          </div>
+          <button onclick="concludeWhisperPhase()" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-zinc-950 font-bold text-xs tracking-[0.2em] uppercase rounded transition-all cursor-pointer">
+            Proceed To Dusk & Public Ledger →
+          </button>
+        `;
+        return;
+      }
+
+      controls.innerHTML = `
+        <div class="bg-[#14141c] border border-zinc-700/80 rounded p-2.5 flex items-center justify-between text-xs mb-2">
+          <span>TARGET: <strong class="text-amber-400">Seat ${target.id} (${target.name})</strong></span>
+          <span class="text-[11px] text-zinc-400">VIT: ${target.vitality}% | ${target.psychState}</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button onclick="sendPlayerWhisper(${target.id}, 'PACT')" ${alreadyTargeted ? 'disabled' : ''} class="p-2.5 text-left bg-[#121a16] hover:bg-emerald-950/60 disabled:opacity-40 border border-emerald-800/70 rounded transition-all cursor-pointer">
+            <div class="text-[11px] font-bold text-emerald-300">🤝 SOLIDARITY PACT</div>
+            <div class="text-[10px] text-zinc-400 mt-0.5">If reciprocated today, BOTH gain +${SOLIDARITY_BONUS} VIT.</div>
+          </button>
+
+          <button onclick="sendPlayerWhisper(${target.id}, 'SHARE_BREAD')" ${alreadyTargeted || player.vitality <= BREAD_COST + 5 ? 'disabled' : ''} class="p-2.5 text-left bg-[#191610] hover:bg-amber-950/60 disabled:opacity-40 border border-amber-800/70 rounded transition-all cursor-pointer">
+            <div class="text-[11px] font-bold text-amber-300">🍞 SHARE RESERVES</div>
+            <div class="text-[10px] text-zinc-400 mt-0.5">Sacrifice -${BREAD_COST} VIT to grant them +${BREAD_HEAL} VIT & high Trust.</div>
+          </button>
+
+          <button onclick="sendPlayerWhisper(${target.id}, 'PROBE')" ${alreadyTargeted ? 'disabled' : ''} class="p-2.5 text-left bg-[#14141d] hover:bg-zinc-800 disabled:opacity-40 border border-zinc-700 rounded transition-all cursor-pointer">
+            <div class="text-[11px] font-bold text-zinc-200">👁 PROBE LOYALTY</div>
+            <div class="text-[10px] text-zinc-400 mt-0.5">Test their composure and uncover who they suspect.</div>
+          </button>
+
+          <button onclick="sendPlayerWhisper(${target.id}, 'PRESSURE')" ${alreadyTargeted ? 'disabled' : ''} class="p-2.5 text-left bg-[#1c1113] hover:bg-red-950/60 disabled:opacity-40 border border-red-900/70 rounded transition-all cursor-pointer">
+            <div class="text-[11px] font-bold text-red-300">🗡 INTIMIDATE / ACCUSE</div>
+            <div class="text-[10px] text-zinc-400 mt-0.5">Rattle their nerves & raise table suspicion on them.</div>
+          </button>
+        </div>
+
+        <button onclick="concludeWhisperPhase()" class="w-full mt-2 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 text-[11px] font-semibold tracking-widest uppercase rounded transition-all cursor-pointer">
+          End Whispers Early & Advance To Dusk →
+        </button>
+      `;
+    }
+
+    window.sendPlayerWhisper = function(targetId, intent) {
+      if (game.phase !== 'WHISPERS' || game.whispersRemaining <= 0) return;
+      const target = game.players.find(p => p.id === targetId);
+      const player = game.players[0];
+      if (!target || !target.alive) return;
+
+      sfx.playWhisperTone();
+      game.whispersRemaining--;
+      game.playerWhisperTargetsToday.push({ targetId, intent });
+
+      let replyText = '';
+
+      if (intent === 'PACT') {
+        target.trustTowardPlayer = Math.min(100, target.trustTowardPlayer + 12);
+        // Check if AI reciprocates Solidarity Pact based on trust & archetype
+        const reciprocates =
+          (target.role === 'SOVEREIGN' && target.sovereignPersona === 'WARM_MANIPULATOR') ||
+          (target.trustTowardPlayer >= 54 && Math.random() < (target.altruism + 0.35));
+
+        if (reciprocates) {
+          player.vitality = Math.min(100, player.vitality + SOLIDARITY_BONUS);
+          target.vitality = Math.min(100, target.vitality + SOLIDARITY_BONUS);
+          game.pactsFormedCount++;
+          replyText = `"Agreed, Seat 1. Pooling our rations and focus keeps us both alive." [MUTUAL PACT: +${SOLIDARITY_BONUS} VIT to both!]`;
+          addChronicle(`🤝 Mutual Solidarity Pact formed with Seat ${target.id} (${target.name}). Both gained +${SOLIDARITY_BONUS} Vitality!`, 'text-emerald-400 font-semibold');
+        } else {
+          replyText = `"I appreciate the gesture, Seat 1, but I cannot bind my survival to anyone just yet." [Pact declined]`;
+          addChronicle(`Seat ${target.id} (${target.name}) hesitated and declined your Solidarity Pact.`, 'text-zinc-400');
+        }
+      } else if (intent === 'SHARE_BREAD') {
+        player.vitality = Math.max(1, player.vitality - BREAD_COST);
+        target.vitality = Math.min(100, target.vitality + BREAD_HEAL);
+        target.trustTowardPlayer = Math.min(100, target.trustTowardPlayer + 22);
+        target.suspicionScore = Math.max(0, target.suspicionScore - 8);
+        game.breadSharedCount++;
+        replyText = `"You're giving me your own reserve...? I won't forget this debt when the votes are cast." [Seat ${target.id} +${BREAD_HEAL} VIT]`;
+        addChronicle(`🍞 You transferred reserves (-${BREAD_COST} VIT) to Seat ${target.id} (${target.name}), restoring +${BREAD_HEAL} VIT.`, 'text-amber-300');
+      } else if (intent === 'PROBE') {
+        // AI gives a hint—Citizens point toward high suspicion or real Sovereign clues; Sovereigns deflect!
+        const others = game.players.filter(p => p.alive && !p.isHuman && p.id !== target.id);
+        const suspect = others.sort((a, b) => b.suspicionScore - a.suspicionScore)[0];
+        if (target.role === 'SOVEREIGN') {
+          const citizenScape = others.find(p => p.role === 'CITIZEN') || suspect;
+          replyText = `"Look at Seat ${citizenScape ? citizenScape.id : 3}. Too quiet, watching everyone's plates. That's how a King hides."`;
+          if (citizenScape) citizenScape.suspicionScore += 10;
+        } else {
+          replyText = suspect
+            ? `"Keep your eyes on Seat ${suspect.id} (${suspect.name}). Their voting pattern doesn't add up."`
+            : `"Everyone is on edge. Watch who pushes for extreme rationing."`;
+        }
+        addChronicle(`👁 Whisper from Seat ${target.id} (${target.name}): ${replyText}`, 'text-zinc-300');
+      } else if (intent === 'PRESSURE') {
+        target.trustTowardPlayer = Math.max(0, target.trustTowardPlayer - 18);
+        target.suspicionScore += 14;
+        replyText = target.role === 'SOVEREIGN'
+          ? `"Threatening me won't fill your plate, Seat 1. Turn the table against me and you'll regret it."`
+          : `"Back off! Pointing fingers blindly is exactly what the King of Hearts wants!"`;
+        addChronicle(`🗡 You pressured Seat ${target.id} (${target.name}). Their trust fell, but table suspicion toward them rose.`, 'text-red-300');
+      }
+
+      target.lastWhisperReply = replyText;
+      updatePsychologicalStates();
+      updateAllUI();
+      renderWhisperPhase();
+    };
+
+    window.concludeWhisperPhase = function() {
+      if (game.phase !== 'WHISPERS') return;
+
+      // Simulate Background AI-to-AI Whispers, Mutual Pacts, and Sovereign Pincer Coordination
+      simulateAIWhisperNetwork();
+
+      // Generate Public Ledger Clues (2 Real + 1 Potential Sovereign Falsification)
+      generatePublicLedger();
+
+      game.phase = 'TRIAL';
+      updatePsychologicalStates();
+      updateAllUI();
+      renderPhaseControls();
+    };
+
+    function simulateAIWhisperNetwork() {
+      const aliveAIs = game.players.filter(p => p.alive && !p.isHuman);
+      const sovs = aliveAIs.filter(p => p.role === 'SOVEREIGN');
+      const citizens = aliveAIs.filter(p => p.role === 'CITIZEN');
+
+      // 1. Sovereign Pincer Maneuver
+      if (sovs.length === 2) {
+        const [sovA, sovB] = sovs;
+        // Sovereigns secretly reinforce each other's Vitality slightly if starving
+        if (sovA.vitality < 55 || sovB.vitality < 55) {
+          sovA.vitality = Math.min(100, sovA.vitality + 6);
+          sovB.vitality = Math.min(100, sovB.vitality + 6);
+          game.sovereignSecretLog.push(`Day ${game.day}: Seat ${sovA.id} & Seat ${sovB.id} covertly siphoned +6 VIT from table reserves.`);
+        }
+        // Sovereign B frames a Citizen
+        if (citizens.length > 0) {
+          const scapegoat = citizens[Math.floor(Math.random() * citizens.length)];
+          scapegoat.suspicionScore += 15;
+          game.sovereignSecretLog.push(`Day ${game.day}: Seat ${sovB.id} planted false suspicion against Seat ${scapegoat.id} (${scapegoat.name}).`);
+        }
+      } else if (sovs.length === 1) {
+        const loneSov = sovs[0];
+        loneSov.vitality = Math.min(100, loneSov.vitality + 8);
+        if (citizens.length > 0) {
+          const targetCit = citizens[Math.floor(Math.random() * citizens.length)];
+          targetCit.suspicionScore += 20;
+          game.sovereignSecretLog.push(`Day ${game.day} [UNBOUND]: Seat ${loneSov.id} aggressively framed Seat ${targetCit.id} (${targetCit.name}).`);
+        }
+      }
+
+      // 2. Random AI-to-AI Solidarity Pacts (so AIs also regenerate Vitality dynamically)
+      if (aliveAIs.length >= 2) {
+        const a = aliveAIs[Math.floor(Math.random() * aliveAIs.length)];
+        let b = aliveAIs[Math.floor(Math.random() * aliveAIs.length)];
+        if (a.id !== b.id && a.altruism + b.altruism > 0.85) {
+          a.vitality = Math.min(100, a.vitality + 8);
+          b.vitality = Math.min(100, b.vitality + 8);
+          addChronicle(`Two guests across the marble table exchanged quiet nods—sharing warmth and endurance.`, 'text-zinc-400 italic');
+        }
+      }
+    }
+
+    function generatePublicLedger() {
+      const aliveSovs = game.players.filter(p => p.alive && p.role === 'SOVEREIGN');
+      const aliveCits = game.players.filter(p => p.alive && !p.isHuman && p.role === 'CITIZEN');
+      const clues = [];
+
+      // Clue 1: Genuine behavioral telemetry pointing near a Sovereign
+      if (aliveSovs.length > 0) {
+        const realSov = aliveSovs[Math.floor(Math.random() * aliveSovs.length)];
+        const decoyCit = aliveCits.length > 0 ? aliveCits[Math.floor(Math.random() * aliveCits.length)] : game.players[0];
+        clues.push({
+          text: `LEDGER AUDIT: Metabolic anomaly detected between Seat ${realSov.id} (${realSov.name}) and Seat ${decoyCit.id} (${decoyCit.name}).`,
+          corrupted: false
+        });
+      }
+
+      // Clue 2: Genuine table status or alliance observation
+      if (game.playerWhisperTargetsToday.length > 0) {
+        const lastW = game.playerWhisperTargetsToday[game.playerWhisperTargetsToday.length - 1];
+        clues.push({
+          text: `NETWORK TRACE: Encrypted whisper channel logged between Seat 1 (YOU) and Seat ${lastW.targetId}.`,
+          corrupted: false
+        });
+      } else {
+        clues.push({
+          text: `NETWORK TRACE: Seat 1 (YOU) maintained total silence during the afternoon whisper window.`,
+          corrupted: false
+        });
+      }
+
+      // Clue 3: Sovereign-falsified telemetry (if any Sovereign still lives)
+      if (aliveSovs.length > 0 && aliveCits.length >= 2) {
+        const framed1 = aliveCits[0];
+        const framed2 = aliveCits[1];
+        clues.push({
+          text: `PANTRY SENSOR: Unauthorized ration siphon traced to Seat ${framed1.id} (${framed1.name}) or Seat ${framed2.id} (${framed2.name}).`,
+          corrupted: true
+        });
+      } else {
+        clues.push({
+          text: `PANTRY SENSOR: No external tampering detected. The remaining crown weakens.`,
+          corrupted: false
+        });
+      }
+
+      shuffleArray(clues);
+      game.dailyLedger = clues;
+
+      const ledgerList = document.getElementById('ledger-list');
+      ledgerList.innerHTML = clues
+        .map(
+          (c, idx) => `
+          <li class="p-2 bg-[#13131b] border border-zinc-800/90 rounded flex items-start space-x-2">
+            <span class="text-amber-500 font-bold">[0${idx + 1}]</span>
+            <span class="hallucinate-text">${c.text}</span>
+          </li>`
+        )
+        .join('');
+    }
+
+    // ==========================================
+    // 8. PHASE III: DUSK TRIAL & PURGE EXECUTION
+    // ==========================================
+    function renderTrialPhase() {
+      const badge = document.getElementById('phase-card-badge');
+      const sub = document.getElementById('phase-card-sub');
+      const instr = document.getElementById('phase-instructions');
+      const controls = document.getElementById('phase-controls');
+
+      badge.textContent = `PHASE III // DUSK TRIAL & PURGE`;
+      sub.textContent = `PURGE SOVEREIGN = +${SOVEREIGN_PURGE_BONUS} VIT`;
+      instr.innerHTML = `Review the Public Ledger. Cast your vote to <span class="text-red-400 font-semibold">Purge</span> a suspected Sovereign (restores <span class="text-emerald-400">+${SOVEREIGN_PURGE_BONUS} VIT</span> to all Citizens if correct; inflicts <span class="text-red-400">-${INNOCENT_PURGE_SHOCK} VIT</span> shock if innocent), or Abstain.`;
+
+      const livingTargets = game.players.filter(p => p.alive && !p.isHuman);
+      const optionsHtml = livingTargets
+        .map(
+          p => `<option value="${p.id}" ${p.id === game.selectedSeatId ? 'selected' : ''}>Seat ${p.id} — ${p.name} (${p.archetype} | VIT: ${p.vitality}%)</option>`
+        )
+        .join('');
+
+      controls.innerHTML = `
+        <div class="space-y-2.5">
+          <label class="block text-[10px] tracking-widest text-zinc-400 uppercase">SELECT NOMINEE FOR EXECUTION:</label>
+          <select id="trial-nominee-select" class="w-full bg-[#14141d] border border-zinc-700 text-zinc-100 text-xs p-2.5 rounded focus:outline-none focus:border-red-500">
+            ${optionsHtml}
+          </select>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <button onclick="executeTrialVote(false)" class="py-2.5 px-3 bg-red-900 hover:bg-red-800 text-white font-bold text-xs tracking-wider uppercase rounded border border-red-500/50 transition-all cursor-pointer">
+              ⚖ VOTE TO PURGE SEAT
+            </button>
+            <button onclick="executeTrialVote(true)" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold text-xs tracking-wider uppercase rounded border border-zinc-700 transition-all cursor-pointer">
+              ✋ ABSTAIN FROM PURGE
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    window.executeTrialVote = function(abstain) {
+      if (game.phase !== 'TRIAL' || game.gameOver) return;
+
+      const tally = {}; // seatId -> count
+      let abstainCount = 0;
+
+      // 1. Player Vote
+      if (abstain) {
+        abstainCount++;
+        addChronicle(`You abstained from casting a Purge vote tonight.`, 'text-zinc-400');
+      } else {
+        const selectEl = document.getElementById('trial-nominee-select');
+        const chosenId = parseInt(selectEl.value, 10);
+        tally[chosenId] = (tally[chosenId] || 0) + 1;
+        addChronicle(`You cast a Purge vote against Seat ${chosenId} (${game.players[chosenId - 1].name}).`, 'text-amber-300');
+      }
+
+      // 2. AI Agents Cast Votes
+      const alivePlayers = game.players.filter(p => p.alive);
+      alivePlayers.forEach(voter => {
+        if (voter.isHuman) return;
+
+        const candidates = alivePlayers.filter(c => c.id !== voter.id);
+        if (candidates.length === 0) return;
+
+        if (voter.role === 'SOVEREIGN') {
+          // Sovereigns NEVER vote for each other; they pile onto a vulnerable Citizen
+          const citizenTargets = candidates.filter(c => c.role === 'CITIZEN');
+          if (citizenTargets.length > 0) {
+            // Prefer low-trust or high-suspicion citizen
+            citizenTargets.sort((a, b) => b.suspicionScore - a.suspicionScore);
+            const target = citizenTargets[0];
+            tally[target.id] = (tally[target.id] || 0) + 1;
+          } else {
+            abstainCount++;
+          }
+        } else {
+          // Citizen AI votes based on suspicionScore and low trust
+          if (Math.random() < 0.22 && game.day === 1) {
+            abstainCount++;
+          } else {
+            const scored = candidates.map(c => {
+              let score = c.suspicionScore + (c.isHuman ? (60 - voter.trustTowardPlayer) * 0.5 : 0) + Math.random() * 18;
+              return { id: c.id, score };
+            });
+            scored.sort((a, b) => b.score - a.score);
+            const pick = scored[0].id;
+            tally[pick] = (tally[pick] || 0) + 1;
+          }
+        }
+      });
+
+      // Find highest vote recipient
+      let maxVotes = 0;
+      let condemnedId = null;
+      Object.entries(tally).forEach(([seatIdStr, count]) => {
+        if (count > maxVotes) {
+          maxVotes = count;
+          condemnedId = parseInt(seatIdStr, 10);
+        }
+      });
+
+      // Require at least 3 votes (or plurality > abstentions) to execute
+      if (condemnedId !== null && maxVotes >= 2 && maxVotes >= abstainCount) {
+        const victim = game.players.find(p => p.id === condemnedId);
+        sfx.playGavelStrike();
+        victim.alive = false;
+        victim.deathReason = 'Executed by Table Purge';
+
+        if (victim.role === 'SOVEREIGN') {
+          const remainingSovs = game.players.filter(p => p.alive && p.role === 'SOVEREIGN').length;
+          // Restore +25 Vitality to all surviving Citizens!
+          game.players.forEach(p => {
+            if (p.alive && p.role === 'CITIZEN') {
+              p.vitality = Math.min(100, p.vitality + SOVEREIGN_PURGE_BONUS);
+            }
+          });
+
+          if (remainingSovs === 1) {
+            addChronicle(
+              `👑⚖ EXECUTION: Seat ${victim.id} (${victim.name}) WAS ONE HALF OF THE KING OF HEARTS! Surviving Citizens surge with hope (+${SOVEREIGN_PURGE_BONUS} VIT)—YET ONE CROWN STILL LIVES!`,
+              'text-amber-400 font-bold'
+            );
+          } else {
+            addChronicle(
+              `👑⚖ EXECUTION: Seat ${victim.id} (${victim.name}) WAS THE FINAL SOVEREIGN! The King of Hearts is shattered!`,
+              'text-emerald-400 font-bold'
+            );
+          }
+        } else {
+          // Innocent Citizen purged -> -12 Vitality collective shock
+          addChronicle(
+            `💀⚖ TRAGIC PURGE: Seat ${victim.id} (${victim.name}) was an INNOCENT CITIZEN! Collective dread drains -${INNOCENT_PURGE_SHOCK} Vitality from everyone.`,
+            'text-red-500 font-bold'
+          );
+          game.players.forEach(p => {
+            if (!p.alive) return;
+            p.vitality = Math.max(0, p.vitality - INNOCENT_PURGE_SHOCK);
+            if (p.vitality === 0) {
+              p.alive = false;
+              p.deathReason = 'Systemic Shock & Exhaustion';
+              addChronicle(`💀 Seat ${p.id} (${p.name}) succumbed to shock after the false execution.`, 'text-red-500');
+            }
+          });
+        }
+      } else {
+        addChronicle(`The table failed to reach a Purge consensus (${abstainCount} abstained). Nobody was executed tonight.`, 'text-zinc-400');
+      }
+
+      updatePsychologicalStates();
+      updateAllUI();
+
+      if (checkEndConditions()) return;
+
+      // Advance to Next Day
+      game.day++;
+      game.phase = 'RATIONING';
+      addChronicle(`--- DAWN OF DAY ${game.day} ---`, 'text-amber-500/80 font-semibold');
+      updateAllUI();
+      renderPhaseControls();
+    };
+
+    // ==========================================
+    // 9. WIN & LOSS CONDITION EVALUATOR
+    // ==========================================
+    function checkEndConditions() {
+      const player = game.players[0];
+      const aliveSovs = game.players.filter(p => p.alive && p.role === 'SOVEREIGN');
+      const aliveCits = game.players.filter(p => p.alive && p.role === 'CITIZEN');
+
+      // 1. Player Eliminated (Starvation or Purged)
+      if (!player.alive) {
+        triggerEndgame(
+          false,
+          'ELIMINATED // THE BANQUET CLAIMS YOU',
+          player.deathReason === 'Executed by Table Purge'
+            ? 'Turned against one another by the Sovereigns’ whispers, the table voted to execute you.'
+            : 'Your Vitality reached 0%. Exhausted and starved, you collapsed over the marble table.'
+        );
+        return true;
+      }
+
+      // 2. Player Victory: Both Sovereigns Purged!
+      if (aliveSovs.length === 0) {
+        triggerEndgame(
+          true,
+          'GAME CLEAR // KING OF HEARTS DETHRONED',
+          `Across ${game.day} grueling days, you survived the scarcity, saw through the two-bodied deception, and purged both halves of the King of Hearts.`
+        );
+        return true;
+      }
+
+      // 3. Sovereign Victory: Sovereigns reach parity or majority over Citizens
+      if (aliveSovs.length >= aliveCits.length) {
+        triggerEndgame(
+          false,
+          'DEFEAT // SOVEREIGN MAJORITY',
+          `With only ${aliveCits.length} Citizen(s) left against ${aliveSovs.length} Sovereign(s), the King of Hearts seizes absolute control of the voting table.`
+        );
+        return true;
+      }
+
+      return false;
+    }
+
+    function triggerEndgame(isVictory, title, summary) {
+      game.gameOver = true;
+      game.phase = 'ENDED';
+      sfx.setStarvationHeartbeat(false);
+      document.body.classList.remove('starving-hallucination');
+      document.getElementById('hallucination-banner').classList.add('hidden');
+
+      const modal = document.getElementById('endgame-modal');
+      const badge = document.getElementById('end-badge');
+      const titleEl = document.getElementById('end-title');
+      const summaryEl = document.getElementById('end-summary');
+      const rolesGrid = document.getElementById('end-roles-grid');
+      const sovLogEl = document.getElementById('end-sovereign-log');
+      const metricsEl = document.getElementById('end-metrics');
+
+      badge.textContent = isVictory ? 'STATUS // SURVIVED (K♥ CLEARED)' : 'STATUS // GAME OVER';
+      badge.className = `text-xs font-bold tracking-[0.3em] uppercase mb-1 ${isVictory ? 'text-emerald-400' : 'text-red-500'}`;
+      titleEl.textContent = title;
+      summaryEl.textContent = summary;
+
+      rolesGrid.innerHTML = game.players
+        .map(p => {
+          const isSov = p.role === 'SOVEREIGN';
+          return `
+            <div class="p-2.5 rounded border ${isSov ? 'bg-red-950/40 border-red-700' : 'bg-[#14141c] border-zinc-800'}">
+              <div class="flex justify-between items-center text-[10px] text-zinc-400">
+                <span>SEAT ${p.id}</span>
+                <span>${p.alive ? `${p.vitality}%` : 'DEAD'}</span>
+              </div>
+              <div class="font-bold text-zinc-100 mt-0.5 truncate">${p.name}</div>
+              <div class="text-[10px] font-bold mt-1 ${isSov ? 'text-red-400' : 'text-emerald-400'}">
+                ${isSov ? '👑 SOVEREIGN (K♥)' : 'CITIZEN'}
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      sovLogEl.innerHTML = game.sovereignSecretLog
+        .map(entry => `<li>• ${entry}</li>`)
+        .join('');
+
+      metricsEl.textContent = `Survived: ${game.day} Day(s) | Solidarity Pacts: ${game.pactsFormedCount} | Reserves Shared: ${game.breadSharedCount}`;
+      modal.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // 10. UI RENDERING & CIRCULAR TABLE LAYOUT
+    // ==========================================
+    function updateAllUI() {
+      const player = game.players[0];
+      const aliveCount = game.players.filter(p => p.alive).length;
+      const aliveSovs = game.players.filter(p => p.alive && p.role === 'SOVEREIGN').length;
+
+      document.getElementById('hud-day').textContent = game.day;
+      document.getElementById('hud-phase').textContent =
+        game.phase === 'RATIONING' ? 'I. RATIONING' : game.phase === 'WHISPERS' ? 'II. WHISPERS' : 'III. TRIAL';
+      document.getElementById('chronicle-count').textContent = `DAY ${game.day}`;
+
+      const vitEl = document.getElementById('hud-player-vit');
+      vitEl.textContent = `${player.vitality}%`;
+      vitEl.className = `text-xs sm:text-sm font-bold ${
+        player.vitality < 35 ? 'text-red-500 animate-pulse' : player.vitality < 65 ? 'text-amber-400' : 'text-emerald-400'
+      }`;
+
+      // Toggle Starvation Hallucination Mode (< 35% Vitality)
+      const isStarving = player.alive && player.vitality < 35;
+      document.body.classList.toggle('starving-hallucination', isStarving);
+      document.getElementById('hallucination-banner').classList.toggle('hidden', !isStarving);
+      sfx.setStarvationHeartbeat(isStarving);
+
+      // Update Pantry & Alive Counts
+      document.getElementById('hud-alive-count').textContent = `${aliveCount} / 10`;
+      document.getElementById('hud-crown-status').textContent =
+        aliveSovs === 2 ? 'SOVEREIGNS REMAINING: 2' : '⚠ 1 SOVEREIGN REMAINING (UNBOUND)';
+      document.getElementById('pantry-count').textContent = game.pantry;
+      document.getElementById('pantry-bar').style.width = `${(game.pantry / game.maxPantry) * 100}%`;
+
+      renderCircularSeats();
+      updateSeatInspector();
+    }
+
+    function renderCircularSeats() {
+      const container = document.getElementById('seats-layer');
+      container.innerHTML = '';
+
+      // Position 10 seats around the circle (Seat 1 at bottom center = 90 deg)
+      const radiusPercent = 47; // % of parent ring
+      game.players.forEach((p, idx) => {
+        const angleDeg = 90 + idx * 36;
+        const angleRad = (angleDeg * Math.PI) / 180;
+        const leftPct = 50 + radiusPercent * Math.cos(angleRad);
+        const topPct = 50 + radiusPercent * Math.sin(angleRad);
+
+        const isSelected = p.id === game.selectedSeatId;
+        const vitColor =
+          p.vitality < 35 ? 'bg-red-500' : p.vitality < 65 ? 'bg-amber-400' : 'bg-emerald-400';
+
+        const stateBadgeColor =
+          p.psychState === 'Unbound'
+            ? 'text-red-400 border-red-700 bg-red-950/70'
+            : p.psychState === 'Fractured' || p.psychState === 'Desperate'
+            ? 'text-amber-300 border-amber-700/70 bg-amber-950/50'
+            : 'text-zinc-400 border-zinc-700 bg-zinc-900';
+
+        const seatEl = document.createElement('div');
+        seatEl.className = `seat-node hallucinate-tremor absolute -translate-x-1/2 -translate-y-1/2 w-20 sm:w-24 bg-[#121219]/95 border ${
+          p.isHuman ? 'border-amber-500/80' : 'border-zinc-700'
+        } ${isSelected ? 'selected-target' : ''} ${!p.alive ? 'eliminated' : 'cursor-pointer'} rounded-md p-1.5 shadow-lg text-center`;
+
+        seatEl.style.left = `${leftPct}%`;
+        seatEl.style.top = `${topPct}%`;
+
+        seatEl.innerHTML = `
+          <div class="flex items-center justify-between text-[9px] text-zinc-500 font-bold">
+            <span>#${p.id}</span>
+            <span>${p.alive ? `${p.vitality}%` : 'DEAD'}</span>
+          </div>
+          <div class="text-[11px] font-bold ${p.isHuman ? 'text-amber-300' : 'text-zinc-100'} truncate">
+            ${p.name}
+          </div>
+          <div class="w-full h-1 bg-zinc-900 rounded-full overflow-hidden my-1">
+            <div class="h-full ${vitColor} transition-all duration-300" style="width: ${p.vitality}%;"></div>
+          </div>
+          <div class="text-[8px] uppercase tracking-wider px-1 py-0.2 rounded border ${stateBadgeColor} truncate">
+            ${p.alive ? (p.isHuman ? 'SUBJECT' : p.psychState) : 'PURGED/DEAD'}
+          </div>
+        `;
+
+        seatEl.addEventListener('click', () => {
+          game.selectedSeatId = p.id;
+          updateAllUI();
+          if (game.phase === 'WHISPERS' && !p.isHuman && p.alive) {
+            renderWhisperPhase();
+          } else if (game.phase === 'TRIAL' && !p.isHuman && p.alive) {
+            const sel = document.getElementById('trial-nominee-select');
+            if (sel) sel.value = p.id;
+          }
+        });
+
+        container.appendChild(seatEl);
+      });
+    }
+
+    function updateSeatInspector() {
+      const p = game.players.find(pl => pl.id === game.selectedSeatId) || game.players[0];
+      const titleEl = document.getElementById('inspector-title');
+      const statsEl = document.getElementById('inspector-stats');
+
+      if (p.isHuman) {
+        titleEl.innerHTML = `Seat 1: <span class="text-amber-400">YOU (Human Subject)</span>`;
+        statsEl.innerHTML = `<span>Vitality: <strong class="text-zinc-200">${p.vitality}%</strong></span><span>Status: <strong class="text-emerald-400">${p.alive ? 'Alive' : 'Dead'}</strong></span>`;
+        return;
+      }
+
+      const trustLabel =
+        p.trustTowardPlayer >= 75
+          ? '<span class="text-emerald-400">High Alliance</span>'
+          : p.trustTowardPlayer >= 45
+          ? '<span class="text-zinc-300">Neutral</span>'
+          : '<span class="text-red-400">Hostile</span>';
+
+      titleEl.innerHTML = `Seat ${p.id}: <span class="text-zinc-100">${p.name}</span> <span class="text-zinc-500 font-normal">(${p.archetype})</span>`;
+      statsEl.innerHTML = `
+        <span>State: <strong class="text-amber-300">${p.alive ? p.psychState : 'Eliminated'}</strong></span>
+        <span>Trust: <strong>${trustLabel}</strong></span>
+      `;
+    }
+
+    function renderPhaseControls() {
+      if (game.phase === 'RATIONING') renderRationingPhase();
+      else if (game.phase === 'WHISPERS') renderWhisperPhase();
+      else if (game.phase === 'TRIAL') renderTrialPhase();
+    }
+
+    function addChronicle(message, colorClass = 'text-zinc-300') {
+      const log = document.getElementById('chronicle-log');
+      const entry = document.createElement('div');
+      entry.className = `border-l-2 border-zinc-800 pl-2.5 py-0.5 ${colorClass} hallucinate-text`;
+      entry.textContent = message;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    // ==========================================
+    // 11. GLOBAL EVENT LISTENERS
+    // ==========================================
+    document.getElementById('start-game-btn').addEventListener('click', () => {
+      sfx.init();
+      sfx.playPlateClink();
+      document.getElementById('start-overlay').classList.add('hidden');
+      initGame();
+    });
+
+    document.getElementById('play-again-btn').addEventListener('click', () => {
+      sfx.playPlateClink();
+      initGame();
+    });
+
+    document.getElementById('audio-toggle-btn').addEventListener('click', () => {
+      sfx.init();
+      const muted = sfx.toggleMute();
+      document.getElementById('audio-toggle-btn').textContent = muted ? 'SFX: OFF' : 'SFX: ON';
+    });
+
+    document.getElementById('surrender-btn').addEventListener('click', () => {
+      if (game.gameOver) return;
+      sfx.playSurrenderBell();
+      triggerEndgame(
+        false,
+        'SURRENDERED // YOU RANG THE SILVER BELL',
+        'Unable to endure the endless table and mounting paranoia, you struck the silver bell and forfeited your life to the King of Hearts.'
+      );
+    });
+  </script>
+</body>
+</html>
